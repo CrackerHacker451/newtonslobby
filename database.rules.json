@@ -1,0 +1,33 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "hl_video_queue": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["joinedAt"]
+    },
+    "hl_video_sessions": {
+      ".read": true,
+      ".write": true
+    },
+    "hl_teams": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["createdAt", "status"]
+    },
+    "hl_users": {
+      ".read": true,
+      ".write": true
+    },
+    "hl_reviews": {
+      ".read": true,
+      ".write": true,
+      ".indexOn": ["createdAt", "stars"]
+    },
+    "hl_banned_users": {
+      ".read": true,
+      ".write": true
+    }
+  }
+}

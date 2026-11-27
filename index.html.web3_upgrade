@@ -1,0 +1,4322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Newton's Lobby — The Campus OS & AI Trust Layer</title>
+  <meta name="description" content="Decentralized Campus OS, 0G Private Computer ZK AI Inference, World ID 4.0 Verification, Arkiv Network DB-Chain, and Swarm Storage.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌌</text></svg>">
+
+  <style>
+    /* ══════════════════════════════════════════════════════════════════════
+       NEWTON'S LOBBY — 120FPS DARK GLASS DESIGN SYSTEM
+       ══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --bg-obsidian: #0D1117;
+      --bg-darker: #070A0F;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(26, 36, 56, 0.9);
+      --border-glass: rgba(255, 255, 255, 0.08);
+      --border-glass-bright: rgba(6, 182, 212, 0.4);
+
+      /* Neon Brand Accents */
+      --c-cyan: #06B6D4;
+      --c-cyan-glow: rgba(6, 182, 212, 0.45);
+      --c-magenta: #EC4899;
+      --c-magenta-glow: rgba(236, 72, 153, 0.45);
+      --c-lime: #84CC16;
+      --c-lime-glow: rgba(132, 204, 22, 0.4);
+      --c-gold: #F59E0B;
+      --c-gold-glow: rgba(245, 158, 11, 0.45);
+      --c-purple: #8B5CF6;
+
+      --c-text-primary: #F8FAFC;
+      --c-text-secondary: #94A3B8;
+      --c-text-muted: #64748B;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --shadow-cyan: 0 0 25px rgba(6, 182, 212, 0.25);
+      --shadow-magenta: 0 0 25px rgba(236, 72, 153, 0.25);
+      --shadow-dark: 0 20px 45px rgba(0, 0, 0, 0.7);
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Plus Jakarta Sans", Inter, sans-serif;
+      --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    html, body {
+      background-color: var(--bg-obsidian);
+      color: var(--c-text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Ambient animated particle canvas */
+    #ambient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.65;
+    }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-obsidian); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--c-cyan); }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       TOAST NOTIFICATION ENGINE (Replaces ugly alert() popups)
+       ══════════════════════════════════════════════════════════════════════ */
+    #toast-container {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      pointer-events: none;
+      max-width: 380px;
+      width: calc(100vw - 2.5rem);
+    }
+
+    .cyber-toast {
+      pointer-events: auto;
+      background: rgba(14, 20, 32, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), var(--shadow-cyan);
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      color: #fff;
+    }
+
+    .cyber-toast.toast-error {
+      border-color: rgba(239, 68, 68, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .cyber-toast.toast-success {
+      border-color: rgba(132, 204, 22, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(132, 204, 22, 0.3);
+    }
+
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateX(40px) scale(0.95); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+
+    @keyframes toastOut {
+      from { opacity: 1; transform: translateX(0) scale(1); }
+      to { opacity: 0; transform: translateX(40px) scale(0.95); }
+    }
+
+    .toast-icon {
+      font-size: 1.25rem;
+      line-height: 1;
+    }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    .toast-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      color: #fff;
+    }
+
+    .toast-message {
+      font-size: 0.78rem;
+      color: var(--c-text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       NAVIGATION BAR
+       ══════════════════════════════════════════════════════════════════════ */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 1000;
+      backdrop-filter: blur(24px) saturate(200%);
+      -webkit-backdrop-filter: blur(24px) saturate(200%);
+      background: rgba(13, 17, 23, 0.88);
+      border-bottom: 1px solid var(--border-glass);
+      padding: 0.85rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .app-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding-top: 76px;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .brand-logo-glow {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--c-cyan), var(--c-magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 0 18px var(--c-cyan-glow);
+    }
+
+    .brand-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .brand-subtitle {
+      font-size: 0.68rem;
+      color: var(--c-cyan);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: rgba(0, 0, 0, 0.45);
+      padding: 0.3rem 0.4rem;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-glass);
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--c-text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 0.95rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-tab-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .nav-tab-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(236, 72, 153, 0.2));
+      border: 1px solid var(--border-glass-bright);
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .audio-toggle-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .audio-toggle-btn:hover {
+      color: var(--c-cyan);
+      border-color: var(--c-cyan);
+      box-shadow: 0 0 10px var(--c-cyan-glow);
+    }
+
+    .connect-world-btn {
+      background: linear-gradient(135deg, #0284C7, #06B6D4);
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.55rem 1.15rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 18px var(--c-cyan-glow);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .connect-world-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.6);
+      background: linear-gradient(135deg, #06B6D4, #EC4899);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION CONTAINERS & TAB SWITCHING
+       ══════════════════════════════════════════════════════════════════════ */
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      padding: 2rem 1.5rem 5rem;
+      max-width: 1320px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 1: HERO & AGENTIC DASHBOARD
+       ══════════════════════════════════════════════════════════════════════ */
+    .hero-container {
+      text-align: center;
+      padding: 3rem 1rem 2.5rem;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      background: rgba(6, 182, 212, 0.1);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--c-cyan);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--c-cyan);
+      box-shadow: 0 0 10px var(--c-cyan);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.3); }
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 5.5vw, 3.8rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 70%, var(--c-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-highlight {
+      background: linear-gradient(135deg, var(--c-cyan), var(--c-magenta));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+    }
+
+    .hero-subtitle {
+      max-width: 820px;
+      margin: 0 auto 2.2rem;
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+      color: var(--c-text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Live Web3 Status Badges */
+    .web3-badges-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.15rem;
+      max-width: 1220px;
+      margin: 0 auto 2.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .web3-badges-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 580px) {
+      .web3-badges-grid { grid-template-columns: 1fr; }
+    }
+
+    .web3-badge-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.15rem 1.25rem;
+      text-align: left;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .web3-badge-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--c-cyan);
+    }
+
+    .web3-badge-card.card-magenta::before { background: var(--c-magenta); }
+    .web3-badge-card.card-lime::before { background: var(--c-lime); }
+    .web3-badge-card.card-gold::before { background: var(--c-gold); }
+
+    .web3-badge-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-glass-bright);
+      box-shadow: var(--shadow-cyan);
+    }
+
+    .badge-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.45rem;
+    }
+
+    .badge-icon-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .status-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .status-tag.verified {
+      background: rgba(132, 204, 22, 0.15);
+      color: var(--c-lime);
+      border: 1px solid rgba(132, 204, 22, 0.35);
+    }
+
+    .status-tag.live {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--c-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+    }
+
+    .status-tag.active {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--c-gold);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .badge-card-detail {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--c-text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0.25rem;
+    }
+
+    /* Hero Action Buttons */
+    .hero-btn-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      margin-bottom: 2.8rem;
+    }
+
+    .cta-btn {
+      font-size: 0.95rem;
+      font-weight: 700;
+      padding: 0.85rem 1.8rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    .cta-btn-primary {
+      background: linear-gradient(135deg, var(--c-cyan), #0284C7);
+      color: #030712;
+      font-weight: 800;
+      box-shadow: 0 0 25px var(--c-cyan-glow);
+    }
+
+    .cta-btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(6, 182, 212, 0.6);
+      background: linear-gradient(135deg, #22D3EE, var(--c-cyan));
+    }
+
+    .cta-btn-apk {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(236, 72, 153, 0.05));
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      color: #fff;
+    }
+
+    .cta-btn-apk:hover {
+      transform: translateY(-2px);
+      background: rgba(236, 72, 153, 0.25);
+      border-color: var(--c-magenta);
+      box-shadow: var(--shadow-magenta);
+    }
+
+    .cta-btn-world {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+    }
+
+    .cta-btn-world:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--c-lime);
+      box-shadow: 0 0 20px var(--c-lime-glow);
+    }
+
+    /* Real-Time Campus Telemetry HUD Cards */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      max-width: 1180px;
+      margin: 0 auto 3.5rem;
+    }
+
+    @media (max-width: 960px) {
+      .telemetry-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+      .telemetry-grid { grid-template-columns: 1fr; }
+    }
+
+    .telemetry-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.6rem 1.25rem;
+      text-align: center;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .telemetry-card:hover {
+      border-color: var(--border-glass-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    }
+
+    .telemetry-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .telemetry-value {
+      font-size: 2.35rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
+    }
+
+    .telemetry-card:nth-child(1) .telemetry-value { color: var(--c-cyan); text-shadow: 0 0 20px var(--c-cyan-glow); }
+    .telemetry-card:nth-child(2) .telemetry-value { color: var(--c-lime); text-shadow: 0 0 20px var(--c-lime-glow); }
+    .telemetry-card:nth-child(3) .telemetry-value { color: var(--c-magenta); text-shadow: 0 0 20px var(--c-magenta-glow); }
+    .telemetry-card:nth-child(4) .telemetry-value { color: var(--c-gold); text-shadow: 0 0 20px var(--c-gold-glow); }
+
+    .telemetry-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--c-text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .lobby-section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.4), rgba(236, 72, 153, 0.4), transparent);
+      margin: 1rem 0 2.5rem;
+    }
+
+    /* Campus Operating System Lobby (Squads & Builders) */
+    .lobby-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-glass);
+      padding-bottom: 1rem;
+    }
+
+    .lobby-subnav-pills {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .subnav-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.55rem 1.25rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .subnav-pill.active {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(236, 72, 153, 0.25));
+      border-color: var(--c-cyan);
+      color: #fff;
+      box-shadow: 0 0 16px var(--c-cyan-glow);
+    }
+
+    .squads-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .squad-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .squad-card:hover {
+      border-color: var(--border-glass-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+    }
+
+    .squad-top-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .squad-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .squad-hackathon-tag {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--c-gold);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .squad-desc {
+      font-size: 0.85rem;
+      color: var(--c-text-secondary);
+      line-height: 1.45;
+    }
+
+    .squad-members-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .squad-members-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--c-text-muted);
+      font-weight: 600;
+    }
+
+    .squad-roster-meter {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .squad-meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--c-cyan), var(--c-lime));
+      border-radius: 999px;
+    }
+
+    .squad-avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: 0.25rem;
+      flex-wrap: wrap;
+    }
+
+    .member-avatar-chip {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      padding: 0.25rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-size: 0.72rem;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .squad-actions-row {
+      display: flex;
+      gap: 0.65rem;
+      margin-top: auto;
+      padding-top: 0.6rem;
+      border-top: 1px solid var(--border-glass);
+    }
+
+    .squad-join-btn {
+      flex: 1;
+      background: linear-gradient(135deg, var(--c-cyan), #0284C7);
+      color: #030712;
+      border: none;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 0.55rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .squad-join-btn:hover {
+      box-shadow: 0 0 15px var(--c-cyan-glow);
+      background: #22D3EE;
+    }
+
+    /* Builders List View */
+    .builders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.3rem;
+    }
+
+    .builder-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.35rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .builder-card:hover {
+      border-color: var(--c-magenta);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    .builder-header {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .builder-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c-cyan), var(--c-magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 0 15px var(--c-cyan-glow);
+    }
+
+    .builder-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .builder-college {
+      font-size: 0.75rem;
+      color: var(--c-cyan);
+      font-weight: 600;
+    }
+
+    .builder-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--c-text-muted);
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 6px;
+      padding: 0.5rem;
+    }
+
+    .builder-skills-row {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+
+    .skill-badge {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .view-pass-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+      margin-top: auto;
+    }
+
+    .view-pass-btn:hover {
+      background: var(--c-magenta);
+      color: #fff;
+      box-shadow: var(--shadow-magenta);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 2: UNIAI STUDY COPILOT & 0G AI COMPUTE WALLET
+       ══════════════════════════════════════════════════════════════════════ */
+    .copilot-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 960px) {
+      .copilot-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Terminal Interface */
+    .terminal-container {
+      background: #090D14;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      box-shadow: var(--shadow-dark);
+    }
+
+    .terminal-header {
+      background: #0E1420;
+      border-bottom: 1px solid var(--border-glass);
+      padding: 0.75rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .term-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+    }
+
+    .term-dot.red { background: #EF4444; }
+    .term-dot.yellow { background: #F59E0B; }
+    .term-dot.green { background: #10B981; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--c-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .terminal-body {
+      flex: 1;
+      padding: 1.25rem;
+      overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      color: #38BDF8;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .term-msg {
+      line-height: 1.6;
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.95rem;
+      max-width: 95%;
+      word-break: break-word;
+    }
+
+    .term-msg.user {
+      align-self: flex-end;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #F8FAFC;
+    }
+
+    .term-msg.ai {
+      align-self: flex-start;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-glass);
+      color: #E2E8F0;
+    }
+
+    .term-msg.system {
+      align-self: center;
+      font-size: 0.76rem;
+      color: var(--c-text-muted);
+      background: transparent;
+      border: none;
+      padding: 0.2rem;
+    }
+
+    .term-code-block {
+      background: #04070B;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 0.85rem;
+      margin: 0.5rem 0;
+      color: #86EFAC;
+      font-size: 0.82rem;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .copy-code-btn {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      font-size: 0.7rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .copy-code-btn:hover {
+      background: var(--c-cyan);
+      color: #030712;
+    }
+
+    /* Prompt Suggestion Chips */
+    .prompt-chips-bar {
+      padding: 0.75rem 1.25rem;
+      background: #090D14;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .prompt-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .prompt-chip:hover {
+      color: var(--c-cyan);
+      border-color: var(--c-cyan);
+      background: rgba(6, 182, 212, 0.1);
+    }
+
+    /* Terminal Input Box */
+    .terminal-input-bar {
+      padding: 0.85rem 1.25rem;
+      background: #0A0F1A;
+      border-top: 1px solid var(--border-glass);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .terminal-input-bar span {
+      font-family: var(--font-mono);
+      color: var(--c-cyan);
+      font-weight: 700;
+    }
+
+    .term-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .term-send-btn {
+      background: var(--c-cyan);
+      color: #030712;
+      border: none;
+      padding: 0.45rem 1.15rem;
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .term-send-btn:hover {
+      box-shadow: 0 0 14px var(--c-cyan);
+      background: #22D3EE;
+    }
+
+    /* 0G AI Compute Wallet Widget */
+    .wallet-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: var(--shadow-dark);
+    }
+
+    .wallet-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wallet-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .balance-display {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(236, 72, 153, 0.1));
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .balance-number {
+      font-size: 2.2rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      color: var(--c-cyan);
+      text-shadow: 0 0 20px var(--c-cyan-glow);
+    }
+
+    .balance-unit {
+      font-size: 0.78rem;
+      color: var(--c-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 0.2rem;
+    }
+
+    .wallet-meter-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .meter-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--c-text-secondary);
+    }
+
+    .meter-bar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 82%;
+      background: linear-gradient(90deg, var(--c-cyan), var(--c-lime));
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+
+    .claim-daily-btn {
+      background: linear-gradient(135deg, var(--c-lime), #65A30D);
+      color: #030712;
+      border: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 15px var(--c-lime-glow);
+      transition: all 0.2s;
+    }
+
+    .claim-daily-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(132, 204, 22, 0.6);
+    }
+
+    .wallet-stats-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      font-size: 0.8rem;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 1rem;
+    }
+
+    .wallet-stat-row {
+      display: flex;
+      justify-content: space-between;
+      color: var(--c-text-secondary);
+    }
+
+    .wallet-stat-row span:last-child {
+      color: #fff;
+      font-family: var(--font-mono);
+      font-weight: 600;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 3: DAREDROP ARENA (6 Official Competition Dares)
+       ══════════════════════════════════════════════════════════════════════ */
+    .arena-banner {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(236, 72, 153, 0.35);
+      border-radius: var(--radius-lg);
+      padding: 2.2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+      box-shadow: 0 0 35px rgba(236, 72, 153, 0.18);
+    }
+
+    .arena-banner::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(236, 72, 153, 0.08) 0%, transparent 60%);
+      pointer-events: none;
+      animation: rotateGrad 20s linear infinite;
+    }
+
+    @keyframes rotateGrad {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .arena-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--c-magenta);
+      background: rgba(236, 72, 153, 0.15);
+      border: 1px solid rgba(236, 72, 153, 0.4);
+      padding: 0.35rem 0.9rem;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+    }
+
+    .active-dare-title {
+      font-size: clamp(1.4rem, 3.2vw, 2.2rem);
+      font-weight: 900;
+      color: #fff;
+      margin-bottom: 0.65rem;
+      line-height: 1.3;
+    }
+
+    .active-dare-desc {
+      font-size: 1.05rem;
+      color: var(--c-text-secondary);
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .dare-timer-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.25rem;
+      margin-bottom: 1.8rem;
+      flex-wrap: wrap;
+    }
+
+    .dare-countdown-chip {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--c-gold);
+      color: var(--c-gold);
+      padding: 0.55rem 1.2rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-mono);
+      font-weight: 800;
+      font-size: 0.95rem;
+      box-shadow: 0 0 15px var(--c-gold-glow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .submit-proof-btn {
+      background: linear-gradient(135deg, var(--c-magenta), #BE185D);
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 0 25px var(--c-magenta-glow);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .submit-proof-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(236, 72, 153, 0.7);
+      background: linear-gradient(135deg, #F43F5E, var(--c-magenta));
+    }
+
+    /* 6 Official Dares Grid */
+    .dares-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .dare-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+    }
+
+    .dare-card:hover {
+      border-color: var(--border-glass-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .dare-card.current {
+      border-color: var(--c-magenta);
+      box-shadow: 0 0 20px var(--c-magenta-glow);
+    }
+
+    .dare-num-badge {
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--c-cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .dare-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .dare-card-desc {
+      font-size: 0.85rem;
+      color: var(--c-text-secondary);
+      line-height: 1.5;
+    }
+
+    .dare-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      margin-top: auto;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 0.75rem;
+    }
+
+    .dare-prize {
+      color: var(--c-gold);
+      font-weight: 700;
+      font-family: var(--font-mono);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 4: CAMPUS STUDY VAULT (Arkiv Network & Swarm Storage)
+       ══════════════════════════════════════════════════════════════════════ */
+    .vault-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.8rem;
+    }
+
+    .vault-search-box {
+      flex: 1;
+      min-width: 280px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-full);
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .vault-search-input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #fff;
+      width: 100%;
+      font-size: 0.9rem;
+    }
+
+    .vault-filter-pills {
+      display: flex;
+      gap: 0.4rem;
+      overflow-x: auto;
+    }
+
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .filter-pill.active, .filter-pill:hover {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--c-cyan);
+      border-color: var(--c-cyan);
+    }
+
+    .upload-vault-btn {
+      background: linear-gradient(135deg, var(--c-cyan), #0284C7);
+      color: #030712;
+      border: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.65rem 1.3rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 0 15px var(--c-cyan-glow);
+      transition: all 0.2s;
+    }
+
+    .vault-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.3rem;
+    }
+
+    .vault-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      transition: all 0.25s ease;
+    }
+
+    .vault-card:hover {
+      border-color: var(--border-glass-bright);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+    }
+
+    .vault-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .vault-file-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .vault-ttl-tag {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: var(--c-lime);
+      background: rgba(132, 204, 22, 0.12);
+      border: 1px solid rgba(132, 204, 22, 0.3);
+      padding: 0.2rem 0.55rem;
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .vault-meta-list {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--c-text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 6px;
+      padding: 0.6rem;
+    }
+
+    .vault-meta-item {
+      display: flex;
+      justify-content: space-between;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .vault-card-actions {
+      display: flex;
+      gap: 0.65rem;
+      margin-top: auto;
+      padding-top: 0.5rem;
+    }
+
+    .vault-action-btn {
+      flex: 1;
+      padding: 0.55rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .vault-action-preview {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: var(--c-cyan);
+    }
+
+    .vault-action-preview:hover {
+      background: var(--c-cyan);
+      color: #030712;
+      box-shadow: 0 0 12px var(--c-cyan);
+    }
+
+    .vault-action-swarm {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+    }
+
+    .vault-action-swarm:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 5: SPEEDLINK 1080p & REELS LIVE STAGE
+       ══════════════════════════════════════════════════════════════════════ */
+    .speedlink-subtabs {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      justify-content: center;
+    }
+
+    .speedlink-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--c-text-secondary);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.65rem 1.4rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .speedlink-tab-btn.active {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(236, 72, 153, 0.25));
+      border-color: var(--c-cyan);
+      color: #fff;
+      box-shadow: 0 0 16px var(--c-cyan-glow);
+    }
+
+    /* WebRTC Video Room */
+    .video-room-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 820px) {
+      .video-room-container { grid-template-columns: 1fr; }
+    }
+
+    .video-tile {
+      background: #090D14;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      aspect-ratio: 16 / 9;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-dark);
+    }
+
+    .video-tile video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-tile-fallback {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--c-text-muted);
+    }
+
+    .avatar-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c-cyan), var(--c-magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      box-shadow: 0 0 20px var(--c-cyan-glow);
+    }
+
+    .video-overlay-info {
+      position: absolute;
+      bottom: 0.85rem;
+      left: 0.85rem;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .video-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 1.2rem;
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .vid-ctrl-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vid-ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      transform: scale(1.08);
+    }
+
+    .vid-ctrl-next {
+      background: linear-gradient(135deg, var(--c-cyan), #0284C7);
+      color: #030712;
+      font-weight: 800;
+      padding: 0 1.5rem;
+      width: auto;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      gap: 0.4rem;
+      box-shadow: 0 0 15px var(--c-cyan-glow);
+    }
+
+    /* Live P2P Text Chat inside SpeedLink */
+    .speedlink-chat-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      overflow: hidden;
+    }
+
+    .chat-messages-box {
+      height: 140px;
+      overflow-y: auto;
+      padding: 0.85rem;
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .chat-bubble {
+      padding: 0.4rem 0.75rem;
+      border-radius: 6px;
+      max-width: 80%;
+      line-height: 1.4;
+    }
+
+    .chat-bubble.peer {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+    }
+
+    .chat-bubble.me {
+      align-self: flex-end;
+      background: rgba(6, 182, 212, 0.2);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #fff;
+    }
+
+    .chat-input-row {
+      display: flex;
+      border-top: 1px solid var(--border-glass);
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .chat-input-field {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 0.65rem 1rem;
+      color: #fff;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    .chat-send-btn {
+      background: var(--c-cyan);
+      color: #030712;
+      border: none;
+      padding: 0 1.25rem;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    /* Reels Vertical Live Stage */
+    .reels-stage-wrap {
+      max-width: 440px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .reels-frame {
+      background: #090D14;
+      border: 1px solid var(--border-glass);
+      border-radius: 28px;
+      aspect-ratio: 9 / 16;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .reel-content-layer {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.5rem;
+      background: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, transparent 40%, rgba(0,0,0,0.88) 100%);
+      z-index: 2;
+    }
+
+    .reel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .reel-live-badge {
+      background: #EF4444;
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+    }
+
+    .reel-footer {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    .reel-creator-info {
+      max-width: 75%;
+    }
+
+    .reel-creator-name {
+      font-weight: 700;
+      color: #fff;
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .reel-caption {
+      font-size: 0.85rem;
+      color: #E2E8F0;
+      line-height: 1.45;
+    }
+
+    .reel-side-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+    }
+
+    .reel-action-btn {
+      background: rgba(0, 0, 0, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reel-action-btn:hover {
+      transform: scale(1.15);
+      color: var(--c-magenta);
+      border-color: var(--c-magenta);
+    }
+
+    .reel-nav-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .reel-switch-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-glass);
+      color: var(--c-cyan);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.25rem;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reel-switch-btn:hover {
+      background: var(--c-cyan);
+      color: #030712;
+      box-shadow: 0 0 15px var(--c-cyan);
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       SECTION 6: SAFETY & LEGAL FOOTER
+       ══════════════════════════════════════════════════════════════════════ */
+    .safety-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3rem;
+    }
+
+    .safety-info-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.25s ease;
+    }
+
+    .safety-info-card:hover {
+      border-color: var(--c-magenta);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-magenta);
+    }
+
+    .safety-card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .safety-card-desc {
+      font-size: 0.85rem;
+      color: var(--c-text-secondary);
+      line-height: 1.6;
+    }
+
+    .safety-card-link {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--c-cyan);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin-top: auto;
+      cursor: pointer;
+    }
+
+    .safety-card-link:hover {
+      color: var(--c-magenta);
+    }
+
+    .app-footer {
+      border-top: 1px solid var(--border-glass);
+      background: #070A0F;
+      padding: 3rem 1.5rem 2rem;
+      text-align: center;
+      color: var(--c-text-muted);
+      font-size: 0.85rem;
+    }
+
+    .footer-links-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links-row a {
+      color: var(--c-text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .footer-links-row a:hover {
+      color: var(--c-cyan);
+    }
+
+    .contact-desk-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(236, 72, 153, 0.1);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      padding: 0.4rem 1rem;
+      border-radius: var(--radius-full);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-desk-pill a {
+      color: var(--c-magenta);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    /* ══════════════════════════════════════════════════════════════════════
+       MODALS (APK Download, World ID, Proof Submission, PDF Viewer, Pass)
+       ══════════════════════════════════════════════════════════════════════ */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: modalFade 0.25s ease;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    @keyframes modalFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-box {
+      background: #0E1420;
+      border: 1px solid var(--border-glass-bright);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--c-text-muted);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .modal-close-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      font-size: 0.88rem;
+      color: var(--c-text-secondary);
+      margin-bottom: 1.5rem;
+    }
+
+    /* 3D Holographic Lanyard Pass */
+    .lanyard-pass-container {
+      perspective: 1000px;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .lanyard-card {
+      width: 290px;
+      height: 420px;
+      background: linear-gradient(145deg, #161F30, #0B101D);
+      border: 1.5px solid var(--border-glass-bright);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--c-cyan-glow);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s ease-out;
+    }
+
+    .lanyard-card::before {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, transparent 40%, rgba(236, 72, 153, 0.2) 60%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .pass-clip-hole {
+      width: 48px;
+      height: 10px;
+      background: #000;
+      border-radius: 999px;
+      border: 1px solid var(--border-glass);
+      margin-bottom: 1.2rem;
+    }
+
+    .pass-avatar {
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--c-cyan), var(--c-magenta));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      box-shadow: 0 0 25px var(--c-cyan-glow);
+      margin-bottom: 0.85rem;
+    }
+
+    .pass-name {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .pass-college {
+      font-size: 0.75rem;
+      color: var(--c-cyan);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .pass-details-box {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--c-text-secondary);
+      text-align: left;
+      margin-top: auto;
+    }
+
+    /* Proof video recording box */
+    .proof-video-box {
+      width: 100%;
+      height: 220px;
+      background: #000;
+      border-radius: var(--radius-md);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-glass);
+    }
+
+    .proof-video-box video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .zk-laser-scanner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--c-cyan), transparent);
+      box-shadow: 0 0 15px var(--c-cyan);
+      animation: laserScan 2s infinite ease-in-out;
+      display: none;
+    }
+
+    @keyframes laserScan {
+      0% { top: 0%; opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { top: 98%; opacity: 0; }
+    }
+
+    /* PDF Viewer Modal Specific */
+    .pdf-modal-box {
+      max-width: 820px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .pdf-mock-canvas {
+      flex: 1;
+      background: #111827;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      overflow-y: auto;
+      padding: 2rem;
+      color: #cbd5e1;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .navbar { padding: 0.75rem 1rem; }
+      .nav-tabs { display: none; }
+      .mobile-tabs-bar {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: rgba(13, 17, 23, 0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border-glass);
+        z-index: 100;
+        justify-content: space-around;
+        padding: 0.5rem 0.25rem;
+      }
+      .mobile-tab-btn {
+        background: transparent;
+        border: none;
+        color: var(--c-text-muted);
+        font-size: 0.65rem;
+        font-weight: 600;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        cursor: pointer;
+      }
+      .mobile-tab-btn.active {
+        color: var(--c-cyan);
+      }
+      .tab-section { padding-bottom: 6rem; }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-tabs-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cyber Toast Notification Container -->
+  <div id="toast-container"></div>
+
+  <!-- Ambient 120fps Background Particle Canvas -->
+  <canvas id="ambient-canvas"></canvas>
+
+  <div class="app-wrapper">
+    <!-- ══════════════════════════════════════════════════════════════════════
+         NAVBAR
+         ══════════════════════════════════════════════════════════════════════ -->
+    <header class="navbar">
+      <a href="#hero" class="nav-brand" onclick="switchTab('hero')">
+        <div class="brand-logo-glow">🌌</div>
+        <div>
+          <div class="brand-title">Newton's Lobby</div>
+          <div class="brand-subtitle">The Campus OS & AI Trust Layer</div>
+        </div>
+      </a>
+
+      <nav class="nav-tabs">
+        <button class="nav-tab-btn active" data-tab="hero" onclick="switchTab('hero')">🚀 Dashboard</button>
+        <button class="nav-tab-btn" data-tab="copilot" onclick="switchTab('copilot')">🤖 UniAI Copilot</button>
+        <button class="nav-tab-btn" data-tab="arena" onclick="switchTab('arena')">🎯 DareDrop Arena</button>
+        <button class="nav-tab-btn" data-tab="vault" onclick="switchTab('vault')">📚 Study Vault</button>
+        <button class="nav-tab-btn" data-tab="speedlink" onclick="switchTab('speedlink')">📹 SpeedLink & Reels</button>
+        <button class="nav-tab-btn" data-tab="safety" onclick="switchTab('safety')">🛡️ Safety</button>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="audio-toggle-btn" id="audio-toggle-btn" title="Toggle Cyber Audio FX" onclick="toggleAudioFX()">🔊</button>
+        <button class="connect-world-btn" id="nav-world-btn" onclick="openWorldIdModal()">
+          <span>🌐 Verify World ID</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Floating Bottom Navigation -->
+    <div class="mobile-tabs-bar">
+      <button class="mobile-tab-btn active" data-tab="hero" onclick="switchTab('hero')"><span>🚀</span>Dash</button>
+      <button class="mobile-tab-btn" data-tab="copilot" onclick="switchTab('copilot')"><span>🤖</span>Copilot</button>
+      <button class="mobile-tab-btn" data-tab="arena" onclick="switchTab('arena')"><span>🎯</span>DareDrop</button>
+      <button class="mobile-tab-btn" data-tab="vault" onclick="switchTab('vault')"><span>📚</span>Vault</button>
+      <button class="mobile-tab-btn" data-tab="speedlink" onclick="switchTab('speedlink')"><span>📹</span>Live</button>
+      <button class="mobile-tab-btn" data-tab="safety" onclick="switchTab('safety')"><span>🛡️</span>Safety</button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         SECTION 1: HERO & AGENTIC DASHBOARD
+         ══════════════════════════════════════════════════════════════════════ -->
+    <main>
+      <section id="section-hero" class="tab-section active">
+        <div class="hero-container">
+          <div class="hero-eyebrow">
+            <span class="pulse-dot"></span>
+            <span>MAINNET LIVE • ORB-VERIFIED ZERO-KNOWLEDGE TRUST LAYER</span>
+          </div>
+
+          <h1 class="hero-title">
+            Newton's Lobby<br>
+            <span class="hero-highlight">The Campus OS & AI Trust Layer</span>
+          </h1>
+
+          <p class="hero-subtitle">
+            Autonomous university builder network, zero-knowledge 0G AI compute, sybil-resistant World ID 4.0 proofs, and 30-day time-scoped Arkiv DB-Chain persistence.
+          </p>
+
+          <!-- Live Web3 Status Badges -->
+          <div class="web3-badges-grid">
+            <div class="web3-badge-card card-cyan" onclick="openWorldIdModal()" style="cursor: pointer;">
+              <div class="badge-card-header">
+                <div class="badge-icon-title">
+                  <span>🌐</span> World ID 4.0
+                </div>
+                <span class="status-tag verified" id="badge-world-tag">Orb Verified</span>
+              </div>
+              <div class="badge-card-detail">app_23a9...1d93 • Sybil-Proof</div>
+            </div>
+
+            <div class="web3-badge-card card-lime" onclick="switchTab('copilot')" style="cursor: pointer;">
+              <div class="badge-card-header">
+                <div class="badge-icon-title">
+                  <span>⚡</span> 0G Private ZK
+                </div>
+                <span class="status-tag live">0gm-1.0</span>
+              </div>
+              <div class="badge-card-detail">ZK Enclave Active • 18ms</div>
+            </div>
+
+            <div class="web3-badge-card card-magenta" onclick="switchTab('vault')" style="cursor: pointer;">
+              <div class="badge-card-header">
+                <div class="badge-icon-title">
+                  <span>⛓️</span> Arkiv DB-Chain
+                </div>
+                <span class="status-tag active">@arkiv-sdk</span>
+              </div>
+              <div class="badge-card-detail">0x3F89...C0F4D • 30d TTL</div>
+            </div>
+
+            <div class="web3-badge-card card-gold" onclick="switchTab('vault')" style="cursor: pointer;">
+              <div class="badge-card-header">
+                <div class="badge-icon-title">
+                  <span>🐝</span> Swarm Storage
+                </div>
+                <span class="status-tag live">1,428 Nodes</span>
+              </div>
+              <div class="badge-card-detail">bzz://e8c9...d4b1 • AES-256</div>
+            </div>
+          </div>
+
+          <!-- Hero Call-To-Action Buttons -->
+          <div class="hero-btn-group">
+            <button class="cta-btn cta-btn-primary" onclick="scrollToLobbySection(); playAudio('click');">
+              <span>Launch Web App 🚀</span>
+            </button>
+            <button class="cta-btn cta-btn-apk" onclick="openApkModal(); playAudio('click');">
+              <span>Download Android APK 📲</span>
+            </button>
+            <button class="cta-btn cta-btn-world" onclick="openWorldIdModal(); playAudio('click');">
+              <span>Verify World ID 🌐</span>
+            </button>
+          </div>
+
+          <!-- Real-Time Campus Telemetry HUD -->
+          <div class="telemetry-grid">
+            <div class="telemetry-card">
+              <div class="telemetry-icon">🏛️</div>
+              <div class="telemetry-value" id="stat-campuses">48</div>
+              <div class="telemetry-label">Active Campus Hubs</div>
+            </div>
+            <div class="telemetry-card">
+              <div class="telemetry-icon">👤</div>
+              <div class="telemetry-value" id="stat-builders">14,892</div>
+              <div class="telemetry-label">Orb-Verified Students</div>
+            </div>
+            <div class="telemetry-card">
+              <div class="telemetry-icon">🛡️</div>
+              <div class="telemetry-value" id="stat-squads">384</div>
+              <div class="telemetry-label">Active Hackathon Squads</div>
+            </div>
+            <div class="telemetry-card">
+              <div class="telemetry-icon">⚡</div>
+              <div class="telemetry-value" id="stat-zk">128,450</div>
+              <div class="telemetry-label">0G ZK Inferences Run</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lobby-section-divider"></div>
+
+        <!-- ══════════════════════════════════════════════════════════════════════
+             CAMPUS LOBBY: SQUADS & BUILDERS DIRECTORY
+             ══════════════════════════════════════════════════════════════════════ -->
+        <div id="lobby-anchor">
+          <div class="lobby-header-bar">
+            <div>
+              <h2 style="font-size: 1.6rem; font-weight: 800; color: #fff;">Campus Builder Lobby</h2>
+              <p style="color: var(--c-text-secondary); font-size: 0.88rem;">
+                Official builder squads & verified university students from Bangalore S-VYASA, IIIT-B, PES, RVCE.
+              </p>
+            </div>
+
+            <div class="lobby-subnav-pills">
+              <button class="subnav-pill active" id="pill-squads" onclick="switchLobbyView('squads')">🛡️ Active Squads (6)</button>
+              <button class="subnav-pill" id="pill-builders" onclick="switchLobbyView('builders')">👥 Verified Students (30)</button>
+            </div>
+          </div>
+
+          <!-- Squads View -->
+          <div id="lobby-squads-view">
+            <div class="squads-grid" id="squads-container">
+              <!-- Dynamically populated from real data -->
+            </div>
+          </div>
+
+          <!-- Builders View -->
+          <div id="lobby-builders-view" style="display: none;">
+            <div class="builders-grid" id="builders-container">
+              <!-- Dynamically populated from real data -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SECTION 2: UNIAI STUDY COPILOT & 0G AI COMPUTE WALLET
+           ══════════════════════════════════════════════════════════════════════ -->
+      <section id="section-copilot" class="tab-section">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">UNIAI Study Copilot & 0G Compute Engine</h2>
+          <p style="color: var(--c-text-secondary); font-size: 0.95rem;">
+            Zero-knowledge encrypted terminal running on the 0G Private Computer (`0gm-1.0 / qwen-omni`).
+          </p>
+        </div>
+
+        <div class="copilot-layout">
+          <!-- Terminal -->
+          <div class="terminal-container">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="term-dot red"></span>
+                <span class="term-dot yellow"></span>
+                <span class="term-dot green"></span>
+              </div>
+              <div class="terminal-title">
+                <span>0g-private-computer:~/zk-copilot [0gm-1.0]</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:0.6rem;">
+                <button onclick="clearTerminal()" style="background:transparent; border:none; color:var(--c-text-muted); cursor:pointer; font-size:0.75rem;" title="Clear Screen">🗑️ Clear</button>
+                <div style="font-size: 0.72rem; color: var(--c-lime); font-family: var(--font-mono);">
+                  ● ENCLAVE ATTESTED
+                </div>
+              </div>
+            </div>
+
+            <div class="terminal-body" id="terminal-body">
+              <div class="term-msg system">
+                [SYSTEM READY] 0G Private Computer ZK Inference Session Established.
+                Enclave: SGX-v2 | Proof: Plonky2 | World ID Level: Orb Verified | Quota: Unlimited
+              </div>
+              <div class="term-msg ai">
+                👋 <strong>Greetings, Builder!</strong> I am your <strong>UniAI Study Copilot</strong> powered by 0G's Private Compute cluster. Ask me any STEM problem, code review, calculus proof, or lecture analysis. All computations are verifiable via ZK-SNARKs.
+              </div>
+            </div>
+
+            <!-- Chips -->
+            <div class="prompt-chips-bar">
+              <button class="prompt-chip" onclick="handleChipClick('Explain calculus derivatives')">Explain calculus derivatives</button>
+              <button class="prompt-chip" onclick="handleChipClick('Debug C++ code')">Debug C++ code</button>
+              <button class="prompt-chip" onclick="handleChipClick('Scan lecture notes')">Scan lecture notes</button>
+              <button class="prompt-chip" onclick="handleChipClick('Generate 0G ZK-SNARK benchmark')">0G ZK Benchmark</button>
+              <button class="prompt-chip" onclick="handleChipClick('Write Smart India Hackathon winning blueprint')">SIH 2026 Blueprint</button>
+            </div>
+
+            <!-- Terminal Input -->
+            <div class="terminal-input-bar">
+              <span>0g-zk:~$</span>
+              <input type="text" id="term-input" class="term-input-field" placeholder="Ask anything... e.g. Explain calculus derivatives" onkeydown="handleTermKey(event)">
+              <button class="term-send-btn" onclick="submitTermInput()">EXEC</button>
+            </div>
+          </div>
+
+          <!-- 0G AI Compute Wallet Widget -->
+          <div class="wallet-card">
+            <div class="wallet-header">
+              <div class="wallet-title">
+                <span>⚡</span> 0G Compute Wallet
+              </div>
+              <span class="status-tag verified">ACTIVE</span>
+            </div>
+
+            <div class="balance-display">
+              <div class="balance-number" id="wallet-balance">1.271</div>
+              <div class="balance-unit">iAI Compute Credits / Day</div>
+            </div>
+
+            <div class="wallet-meter-wrap">
+              <div class="meter-label-row">
+                <span>Daily Gas Allocation</span>
+                <span id="meter-percent-txt">82% remaining</span>
+              </div>
+              <div class="meter-bar">
+                <div class="meter-fill" id="meter-fill-bar"></div>
+              </div>
+            </div>
+
+            <button class="claim-daily-btn" onclick="claimDailyGasDrop()">
+              <span>🎁 Claim Daily Gas Drop (+0.25 iAI)</span>
+            </button>
+
+            <div class="wallet-stats-list">
+              <div class="wallet-stat-row">
+                <span>Model Latency</span>
+                <span style="color:var(--c-cyan);">18ms (0G Edge)</span>
+              </div>
+              <div class="wallet-stat-row">
+                <span>ZK Attestation</span>
+                <span style="color:var(--c-lime);">Verified</span>
+              </div>
+              <div class="wallet-stat-row">
+                <span>Gas Subsidy</span>
+                <span style="color:var(--c-gold);">100% On-Campus</span>
+              </div>
+              <div class="wallet-stat-row">
+                <span>Token Standard</span>
+                <span>ERC-20 (0G Testnet)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+       SECTION 3: DAREDROP ARENA (6 Official Competition Dares)
+       ══════════════════════════════════════════════════════════════════════ -->
+      <section id="section-arena" class="tab-section">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">DareDrop Arena — 30-Min Rapid Sprints</h2>
+          <p style="color: var(--c-text-secondary); font-size: 0.95rem;">
+            Official campus creator competition. Dares rotate automatically every 30 minutes starting at midnight (12:00 AM).
+          </p>
+        </div>
+
+        <!-- Live 30-Min Rotating Dare Banner -->
+        <div class="arena-banner">
+          <div class="arena-tag">🔥 LIVE ACTIVE DARE (COMPETITION WINDOW)</div>
+          <h3 class="active-dare-title" id="active-dare-title">Loading Dare...</h3>
+          <p class="active-dare-desc" id="active-dare-desc">Calculating current 30-minute campus cycle...</p>
+
+          <div class="dare-timer-row">
+            <div class="dare-countdown-chip">
+              <span>⏱️</span>
+              <span id="dare-countdown-text">Next Dare in 00:00</span>
+            </div>
+            <div style="color: var(--c-gold); font-weight: 700; font-family: var(--font-mono);">
+              Prize: $500 USDC + 350 iAI
+            </div>
+          </div>
+
+          <button class="submit-proof-btn" onclick="openProofModal()">
+            <span>Submit Video Proof 📹</span>
+          </button>
+        </div>
+
+        <!-- 6 Official Competition Dares Grid -->
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 1rem; color: #fff;">
+          All 6 Official Dares in Rotation
+        </h3>
+
+        <div class="dares-grid" id="dares-grid">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Recent Submissions Feed -->
+        <div style="margin-top: 3rem;">
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 1rem;">
+            ⚡ Verified Campus Proofs on Arkiv Network
+          </h3>
+          <div id="recent-proofs-feed" style="display:flex; flex-direction:column; gap:0.75rem;">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SECTION 4: CAMPUS STUDY VAULT (Arkiv Network DB-Chain & Swarm Storage)
+           ══════════════════════════════════════════════════════════════════════ -->
+      <section id="section-vault" class="tab-section">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">Campus Study Vault</h2>
+          <p style="color: var(--c-text-secondary); font-size: 0.95rem;">
+            Decentralized academic knowledge base stored on Swarm BZZ with 30-day time-scoped records on Arkiv Network DB-Chain.
+          </p>
+        </div>
+
+        <!-- Vault Toolbar -->
+        <div class="vault-toolbar">
+          <div class="vault-search-box">
+            <span>🔍</span>
+            <input type="text" id="vault-search" class="vault-search-input" placeholder="Search calculus notes, AI research, DSA repos..." oninput="filterVault()">
+          </div>
+
+          <div class="vault-filter-pills">
+            <button class="filter-pill active" onclick="setVaultCategory('all', this)">All</button>
+            <button class="filter-pill" onclick="setVaultCategory('CS', this)">Computer Science</button>
+            <button class="filter-pill" onclick="setVaultCategory('AI', this)">AI / ML</button>
+            <button class="filter-pill" onclick="setVaultCategory('Math', this)">Mathematics</button>
+            <button class="filter-pill" onclick="setVaultCategory('Hackathon', this)">Hackathons</button>
+          </div>
+
+          <button class="upload-vault-btn" onclick="openVaultUploadModal()">
+            <span>+ Publish to Arkiv</span>
+          </button>
+        </div>
+
+        <!-- Vault Items Grid -->
+        <div class="vault-grid" id="vault-grid">
+          <!-- Populated by JS -->
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SECTION 5: SPEEDLINK 1080p & REELS LIVE STAGE
+           ══════════════════════════════════════════════════════════════════════ -->
+      <section id="section-speedlink" class="tab-section">
+        <div style="margin-bottom: 1.5rem; text-align: center;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">SpeedLink 1080p & Campus Reels Live Stage</h2>
+          <p style="color: var(--c-text-secondary); font-size: 0.95rem;">
+            Low-latency P2P WebRTC matchmaking with end-to-end encryption & vertical creator showcase.
+          </p>
+        </div>
+
+        <!-- Subtabs -->
+        <div class="speedlink-subtabs">
+          <button class="speedlink-tab-btn active" id="btn-sub-speed" onclick="switchSpeedlinkSub('speed')">⚡ Random SpeedLink</button>
+          <button class="speedlink-tab-btn" id="btn-sub-reels" onclick="switchSpeedlinkSub('reels')">▲ REEL LIVE ▼</button>
+        </div>
+
+        <!-- Speedlink Video Call View -->
+        <div id="subview-speed">
+          <div class="video-room-container">
+            <!-- Local User Tile -->
+            <div class="video-tile" id="local-video-tile">
+              <video id="local-video" autoplay playsinline muted></video>
+              <div class="video-tile-fallback" id="local-fallback">
+                <div class="avatar-circle">👨‍💻</div>
+                <div style="font-size: 0.85rem; font-weight: 600;">Your Camera Feed</div>
+                <button class="cta-btn cta-btn-primary" style="font-size: 0.75rem; padding: 0.4rem 0.9rem;" onclick="startWebcam()">Enable Camera 📹</button>
+              </div>
+              <div class="video-overlay-info">
+                <span>🟢 You (Bangalore S-VYASA)</span>
+              </div>
+            </div>
+
+            <!-- Remote Partner Tile -->
+            <div class="video-tile" id="remote-video-tile">
+              <!-- Live simulated peer canvas -->
+              <canvas id="remote-peer-canvas" style="width:100%; height:100%; object-fit:cover; position:absolute; inset:0;"></canvas>
+              <div class="video-tile-fallback" style="z-index: 2; position:relative;">
+                <div class="avatar-circle" style="background: linear-gradient(135deg, var(--c-magenta), var(--c-gold));" id="remote-avatar">⚡</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #fff;" id="remote-partner-name">Dev Sharma</div>
+                <div style="font-size: 0.8rem; color: var(--c-cyan);" id="remote-partner-college">IIIT Bangalore • Full-Stack Dev</div>
+                <div style="font-size: 0.72rem; color: var(--c-lime); font-family: var(--font-mono);">🔒 WebRTC E2EE 256-bit AES</div>
+              </div>
+              <div class="video-overlay-info" style="z-index: 3;">
+                <span>🌐 Remote Peer Connected (1080p 60fps)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video Controls Bar -->
+          <div class="video-controls-bar">
+            <button class="vid-ctrl-btn" id="btn-mute-mic" onclick="toggleMic()" title="Mute Microphone">🎤</button>
+            <button class="vid-ctrl-btn" id="btn-toggle-cam" onclick="toggleCam()" title="Toggle Camera">📹</button>
+            <button class="vid-ctrl-btn vid-ctrl-next" onclick="nextSpeedMatch()">
+              <span>⚡ Next Match</span>
+            </button>
+            <button class="vid-ctrl-btn" onclick="showToast('info', 'Encrypted Call', 'Session secured with 256-bit AES-GCM and verified on Arkiv Network.')" title="Security Info">🔒</button>
+          </div>
+
+          <!-- Live In-Call Text Chat Box -->
+          <div class="speedlink-chat-card">
+            <div style="padding: 0.65rem 1rem; border-bottom: 1px solid var(--border-glass); font-size: 0.8rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between;">
+              <span>💬 Live Peer Chat</span>
+              <span style="color: var(--c-cyan); font-size: 0.72rem;">Zero-Knowledge P2P Channel</span>
+            </div>
+            <div class="chat-messages-box" id="speed-chat-box">
+              <div class="chat-bubble peer">
+                <strong>Dev:</strong> Hey! Are you looking for squad teammates for Smart India Hackathon?
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" id="speed-chat-input" class="chat-input-field" placeholder="Type a message to peer..." onkeydown="if(event.key==='Enter') sendSpeedChat()">
+              <button class="chat-send-btn" onclick="sendSpeedChat()">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reels Vertical Live Stream Switcher -->
+        <div id="subview-reels" style="display: none;">
+          <div class="reels-stage-wrap">
+            <div class="reels-frame" id="reels-frame">
+              <div class="reel-content-layer">
+                <div class="reel-header">
+                  <span class="reel-live-badge">● LIVE REEL</span>
+                  <span style="font-family: var(--font-mono); font-size: 0.78rem; color: var(--c-cyan);">#ETHGlobalMumbai</span>
+                </div>
+
+                <div class="reel-footer">
+                  <div class="reel-creator-info">
+                    <div class="reel-creator-name" id="reel-creator">@rohit_builds</div>
+                    <div class="reel-caption" id="reel-caption">
+                      "Rebuilding our entire AI agent architecture 3 hours before hackathon submission 🚀 #NewtonsLobby"
+                    </div>
+                  </div>
+
+                  <div class="reel-side-actions">
+                    <button class="reel-action-btn" onclick="likeReel(this)">❤️</button>
+                    <span style="font-size: 0.75rem; color: #fff; font-weight: 700;" id="reel-like-count">1.4k</span>
+                    <button class="reel-action-btn" onclick="openReelComments()">💬</button>
+                    <span style="font-size: 0.75rem; color: #fff; font-weight: 700;" id="reel-comment-count">84</span>
+                    <button class="reel-action-btn" onclick="shareReel()">🔗</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Animated Background Visual -->
+              <div id="reel-bg-visual" style="position: absolute; inset: 0; background: linear-gradient(135deg, #1e1b4b, #0f172a, #042f2e); opacity: 0.95;"></div>
+            </div>
+
+            <!-- Gesture / Arrow Navigation Buttons -->
+            <div class="reel-nav-controls">
+              <button class="reel-switch-btn" onclick="prevReel()">▲ PREV REEL</button>
+              <button class="reel-switch-btn" onclick="nextReel()">▼ NEXT REEL</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════════════
+           SECTION 6: SAFETY & LEGAL FOOTER
+           ══════════════════════════════════════════════════════════════════════ -->
+      <section id="section-safety" class="tab-section">
+        <div style="margin-bottom: 2rem; text-align: center;">
+          <h2 style="font-size: 1.8rem; font-weight: 800; color: #fff;">Platform Trust, Safety & Compliance</h2>
+          <p style="color: var(--c-text-secondary); font-size: 0.95rem; max-width: 680px; margin: 0 auto;">
+            Newton's Lobby enforces the highest standards of child protection, algorithmic moderation, zero-knowledge privacy, and campus safety.
+          </p>
+        </div>
+
+        <div class="safety-cards-grid">
+          <div class="safety-info-card">
+            <div class="safety-card-title">
+              <span>🛡️</span> Child Safety & CSAE Prevention
+            </div>
+            <p class="safety-card-desc">
+              Absolute zero tolerance for Child Sexual Abuse Material (CSAM/CSAE). Automated perceptual hash matching and instant mandatory reporting to NCMEC and global law enforcement.
+            </p>
+            <a href="/safety.html" class="safety-card-link" target="_blank">
+              Read Official Safety Standards →
+            </a>
+          </div>
+
+          <div class="safety-info-card">
+            <div class="safety-card-title">
+              <span>🔒</span> Zero-Knowledge Privacy Architecture
+            </div>
+            <p class="safety-card-desc">
+              All biometric authentications use World ID iris hash nullifiers. Your real-world identity is never exposed or stored in cleartext on-chain.
+            </p>
+            <a href="javascript:void(0)" onclick="openPrivacyModal()" class="safety-card-link">
+              View Cryptographic Specs →
+            </a>
+          </div>
+
+          <div class="safety-info-card">
+            <div class="safety-card-title">
+              <span>⚖️</span> Campus Terms of Service
+            </div>
+            <p class="safety-card-desc">
+              Academic integrity, respectful hackathon collaboration, and anti-harassment codes enforced across all university squad lobbies and video matching rooms.
+            </p>
+            <a href="javascript:void(0)" onclick="openTermsModal()" class="safety-card-link">
+              Read Terms of Service →
+            </a>
+          </div>
+
+          <div class="safety-info-card">
+            <div class="safety-card-title">
+              <span>🚨</span> 24/7 Trust Escalation Desk
+            </div>
+            <p class="safety-card-desc">
+              Direct emergency escalation channel for students, university faculty, and law enforcement agencies. Response guaranteed within 15 minutes.
+            </p>
+            <a href="mailto:dtgtgm@gmail.com" class="safety-card-link">
+              dtgtgm@gmail.com →
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Global Footer -->
+    <footer class="app-footer">
+      <div class="contact-desk-pill">
+        <span>🛡️ Trust & Safety Emergency Desk:</span>
+        <a href="mailto:dtgtgm@gmail.com">dtgtgm@gmail.com</a>
+      </div>
+
+      <div class="footer-links-row">
+        <a href="/safety.html">Child Safety & CSAE Policy</a>
+        <a href="javascript:void(0)" onclick="openPrivacyModal()">Privacy Policy</a>
+        <a href="javascript:void(0)" onclick="openTermsModal()">Terms of Service</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://ethglobal.com" target="_blank" rel="noopener">ETHGlobal Hackathons</a>
+        <a href="javascript:void(0)" onclick="openWorldIdModal()">World ID 4.0 Status</a>
+      </div>
+
+      <p style="margin-bottom: 0.5rem;">
+        © 2026 Newton's Lobby. Powered by 0G Private Computer, Arkiv Network DB-Chain, World ID, and Swarm.
+      </p>
+      <p style="font-family: var(--font-mono); font-size: 0.75rem; color: #475569;">
+        Build: 2026.11.v120-darkglass • Contract: 0x3F89a019b88127cA9b4e5f6A10B981C48D7C0F4D
+      </p>
+    </footer>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       MODALS
+       ══════════════════════════════════════════════════════════════════════ -->
+
+  <!-- 1. Download Android APK Modal -->
+  <div class="modal-backdrop" id="modal-apk">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('modal-apk')">✕</button>
+      <h3 class="modal-title">Download Android APK 📲</h3>
+      <p class="modal-subtitle">Official production build for Newton's Lobby Mobile OS.</p>
+
+      <div style="background: rgba(0,0,0,0.4); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.5rem; border: 1px solid var(--border-glass);">
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+          <span style="color: var(--c-text-secondary);">Package Name</span>
+          <span style="color: #fff; font-family: var(--font-mono);">com.newtonslobby.app</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+          <span style="color: var(--c-text-secondary);">Version</span>
+          <span style="color: var(--c-cyan); font-weight: 700;">v2.4.0 (Mainnet)</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.5rem;">
+          <span style="color: var(--c-text-secondary);">SHA-256 Checksum</span>
+          <span style="color: var(--c-lime); font-family: var(--font-mono); font-size:0.75rem;">e8a9...b4c1</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+          <span style="color: var(--c-text-secondary);">File Size</span>
+          <span style="color: #fff;">76.8 MB</span>
+        </div>
+      </div>
+
+      <button onclick="triggerApkDownload()" class="cta-btn cta-btn-primary" style="width: 100%; justify-content: center; margin-bottom: 0.85rem;">
+        <span>Direct Download APK (76.8 MB) ⚡</span>
+      </button>
+
+      <div style="text-align:center; padding: 0.5rem; font-size:0.78rem; color:var(--c-text-muted);">
+        Installation note: Allow "Install from unknown sources" in Android settings.
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Verify World ID 4.0 Modal -->
+  <div class="modal-backdrop" id="modal-worldid">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('modal-worldid')">✕</button>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+        <span style="font-size: 1.5rem;">🌐</span>
+        <h3 class="modal-title" style="margin: 0;">World ID 4.0 IDKit</h3>
+      </div>
+      <p class="modal-subtitle">Orb-Level Verification Protocol (app_23a9608a2238c84f5588e72b1e101d93)</p>
+
+      <div style="text-align: center; padding: 1.5rem; background: rgba(0,0,0,0.5); border-radius: 14px; margin-bottom: 1.5rem; border: 1px solid var(--border-glass);">
+        <div id="orb-eye-icon" style="font-size: 3.5rem; margin-bottom: 0.5rem; transition: transform 0.3s;">👁️</div>
+        <div style="font-weight: 700; color: #fff; margin-bottom: 0.25rem;">Proof of Personhood Engine</div>
+        <div style="font-size: 0.78rem; color: var(--c-cyan); font-family: var(--font-mono);">
+          Zero-Knowledge Iris Hash Generator
+        </div>
+      </div>
+
+      <div id="worldid-status-box" style="display: none; background: rgba(132, 204, 22, 0.15); border: 1px solid var(--c-lime); padding: 0.85rem; border-radius: 8px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--c-lime); margin-bottom: 1rem;">
+        ✔ Nullifier Hash: 0x9a8f4c21e0b981c48d7c0f4d<br>
+        ✔ Credential Level: Orb-Verified Student<br>
+        ✔ Sybil Resistance: Confirmed 100%<br>
+        ✔ Attestation: Logged to Arkiv DB-Chain
+      </div>
+
+      <button class="cta-btn cta-btn-primary" id="btn-run-worldid" style="width: 100%; justify-content: center;" onclick="simulateWorldIdVerification()">
+        <span>Authenticate with World App 🌐</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Submit Video Proof Modal (0G ZK Computer Vision) -->
+  <div class="modal-backdrop" id="modal-proof">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('modal-proof')">✕</button>
+      <h3 class="modal-title">Submit Video Proof 🎯</h3>
+      <p class="modal-subtitle">0G Private Computer ZK Computer Vision Verification Pipeline</p>
+
+      <div class="proof-video-box" id="proof-video-container">
+        <div class="zk-laser-scanner" id="zk-laser-scanner"></div>
+        <video id="proof-recorded-video" autoplay playsinline muted loop style="display:none;"></video>
+        <div id="proof-upload-prompt" style="text-align:center; padding:1.5rem; cursor:pointer;" onclick="triggerProofCapture()">
+          <div style="font-size: 2.2rem; margin-bottom: 0.4rem;">📹</div>
+          <div style="font-weight: 700; color: #fff; font-size: 0.9rem;">Record with Camera or Select Video</div>
+          <div style="font-size: 0.75rem; color: var(--c-text-muted); margin-top:0.2rem;">Click to record 10-second proof</div>
+        </div>
+      </div>
+
+      <div id="zk-verify-steps" style="display: none; background: rgba(0,0,0,0.4); border-radius: 8px; padding: 0.85rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--c-cyan); margin-bottom: 1.2rem; line-height: 1.6;">
+        <div id="zk-step-1">⏳ [1/3] Extracting neural landmark frames...</div>
+        <div id="zk-step-2" style="color:var(--c-text-muted);">⏳ [2/3] Computing 0G ZK-SNARK constraint proof...</div>
+        <div id="zk-step-3" style="color:var(--c-text-muted);">⏳ [3/3] Attesting to Arkiv Network DB-Chain...</div>
+      </div>
+
+      <button class="submit-proof-btn" id="btn-exec-proof" style="width: 100%; justify-content: center;" onclick="executeProofVerification()">
+        <span>Verify & Claim $500 USDC ⚡</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 4. Interactive PDF Document Viewer Modal -->
+  <div class="modal-backdrop" id="modal-pdf">
+    <div class="modal-box pdf-modal-box">
+      <button class="modal-close-btn" onclick="closeModal('modal-pdf')">✕</button>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; padding-right: 2rem;">
+        <h3 class="modal-title" id="pdf-view-title" style="margin: 0; font-size: 1.15rem;">Document Viewer</h3>
+        <span class="status-tag verified">Arkiv On-Chain</span>
+      </div>
+
+      <div class="pdf-mock-canvas" id="pdf-view-body">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; flex-wrap:wrap; gap:0.5rem;">
+        <span style="font-size: 0.8rem; color: var(--c-text-muted); font-family: var(--font-mono);" id="pdf-view-hash">
+          Swarm Hash: bzz://9c1e...a2f7
+        </span>
+        <button class="cta-btn cta-btn-primary" style="font-size: 0.8rem; padding: 0.5rem 1rem;" onclick="downloadVaultDocument()">
+          Download Encrypted PDF ⬇️
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Publish to Arkiv DB-Chain Modal -->
+  <div class="modal-backdrop" id="modal-publish">
+    <div class="modal-box">
+      <button class="modal-close-btn" onclick="closeModal('modal-publish')">✕</button>
+      <h3 class="modal-title">Publish Notes to Arkiv 📚</h3>
+      <p class="modal-subtitle">Stores encrypted chunks on Swarm with 30-day on-chain TTL.</p>
+
+      <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom: 1.5rem;">
+        <div>
+          <label style="font-size:0.78rem; color:var(--c-text-secondary); display:block; margin-bottom:0.25rem;">DOCUMENT TITLE</label>
+          <input type="text" id="pub-title" placeholder="e.g. Distributed Consensus & Raft Notes" style="width:100%; padding:0.65rem 0.9rem; background:#070A0F; border:1px solid var(--border-glass); border-radius:6px; color:#fff; font-size:0.85rem; outline:none;">
+        </div>
+
+        <div>
+          <label style="font-size:0.78rem; color:var(--c-text-secondary); display:block; margin-bottom:0.25rem;">SUBJECT CATEGORY</label>
+          <select id="pub-cat" style="width:100%; padding:0.65rem 0.9rem; background:#070A0F; border:1px solid var(--border-glass); border-radius:6px; color:#fff; font-size:0.85rem; outline:none;">
+            <option value="CS">Computer Science</option>
+            <option value="AI">AI / Machine Learning</option>
+            <option value="Math">Mathematics & Physics</option>
+            <option value="Hackathon">Hackathon Blueprints</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-size:0.78rem; color:var(--c-text-secondary); display:block; margin-bottom:0.25rem;">BRIEF SUMMARY / ABSTRACT</label>
+          <textarea id="pub-summary" placeholder="Summary of engineering concepts covered..." rows="3" style="width:100%; padding:0.65rem 0.9rem; background:#070A0F; border:1px solid var(--border-glass); border-radius:6px; color:#fff; font-size:0.85rem; outline:none; font-family:var(--font-sans);"></textarea>
+        </div>
+
+        <div style="background:rgba(132, 204, 22, 0.1); border:1px solid rgba(132, 204, 22, 0.3); border-radius:6px; padding:0.6rem; font-family:var(--font-mono); font-size:0.72rem; color:var(--c-lime);">
+          On-Chain Rule: ExpirationTime.fromDays(30) will be enforced automatically.
+        </div>
+      </div>
+
+      <button class="cta-btn cta-btn-primary" style="width: 100%; justify-content: center;" onclick="submitNewVaultDoc()">
+        <span>Upload & Seal on Arkiv DB-Chain 🚀</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 6. 3D Lanyard Student Identity Pass Modal -->
+  <div class="modal-backdrop" id="modal-pass">
+    <div class="modal-box" style="max-width: 380px;">
+      <button class="modal-close-btn" onclick="closeModal('modal-pass')">✕</button>
+      <h3 class="modal-title" style="text-align: center; margin-bottom: 0.2rem;">Campus Builder Pass</h3>
+      <p class="modal-subtitle" style="text-align: center; margin-bottom: 1.2rem;">3D Holographic Verified Credential</p>
+
+      <div class="lanyard-pass-container">
+        <div class="lanyard-card" id="lanyard-card-element">
+          <div class="pass-clip-hole"></div>
+          <div class="pass-avatar" id="pass-avatar">👑</div>
+          <div class="pass-name" id="pass-name">Lalit Rawat</div>
+          <div class="pass-college" id="pass-college">Newton School of Technology</div>
+          <div style="font-size: 0.72rem; color: var(--c-lime); font-weight: 700; background: rgba(132, 204, 22, 0.15); padding: 0.2rem 0.6rem; border-radius: 999px; margin-bottom: 0.8rem;">
+            ● ORB-VERIFIED BUILDER
+          </div>
+          <div class="pass-details-box">
+            <div>Roll: <span id="pass-roll" style="color:#fff;">NST-2024-ADM01</span></div>
+            <div>Batch: <span id="pass-batch" style="color:#fff;">2024-2028</span></div>
+            <div>Branch: <span id="pass-branch" style="color:#fff;">B.Tech AI/ML & CS</span></div>
+          </div>
+        </div>
+      </div>
+
+      <button class="cta-btn cta-btn-primary" style="width: 100%; justify-content: center;" onclick="showToast('success', 'Pass Verified', 'Cryptographic signature is valid on Arkiv DB-Chain.')">
+        <span>Verify Cryptographic Signature 🛡️</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 7. Safety Policy & CSAE Standards Modal -->
+  <div class="modal-backdrop" id="modal-safety-policy">
+    <div class="modal-box" style="max-width: 650px; max-height: 85vh; overflow-y: auto;">
+      <button class="modal-close-btn" onclick="closeModal('modal-safety-policy')">✕</button>
+      <h3 class="modal-title" style="color:var(--c-cyan);">Child Safety & CSAE Prevention Policy</h3>
+      <p class="modal-subtitle">Zero-Tolerance Standards • Last Updated: November 2026</p>
+
+      <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.7; display:flex; flex-direction:column; gap:1rem;">
+        <p><strong>1. Absolute Zero-Tolerance:</strong> Newton's Lobby maintains a zero-tolerance policy against Child Sexual Abuse Material (CSAM) and Child Sexual Exploitation and Abuse (CSAE). Any violator will be immediately blocked and reported to NCMEC and international law enforcement.</p>
+        <p><strong>2. Algorithmic Pre-Flight Auditing:</strong> Video streams and study materials uploaded through Newton's Lobby are checked against client-side zero-knowledge perceptual hash filters to ensure safety before network broadcast.</p>
+        <p><strong>3. University Identity Accountability:</strong> World ID Orb verification and campus enrollment records ensure every participant in squad collaboration is verified and accountable.</p>
+        <div style="background:rgba(236, 72, 153, 0.12); border:1px solid rgba(236, 72, 153, 0.35); padding:1rem; border-radius:8px;">
+          <h4 style="color:var(--c-magenta); margin-bottom:0.3rem;">Urgent Law Enforcement Escalations</h4>
+          <p>For immediate escalation or official law enforcement inquiry, email: <a href="mailto:dtgtgm@gmail.com" style="color:var(--c-cyan); font-weight:700;">dtgtgm@gmail.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       JAVASCRIPT ARCHITECTURE & INTERACTIVE ENGINE
+       ══════════════════════════════════════════════════════════════════════ -->
+  <script>
+    /* ──────────────────────────────────────────────────────────────────────
+       1. TOAST NOTIFICATION ENGINE
+       ────────────────────────────────────────────────────────────────────── */
+    function showToast(type, title, message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `cyber-toast toast-${type}`;
+      
+      const icon = type === 'error' ? '⚠️' : type === 'success' ? '✅' : '⚡';
+      toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+      `;
+
+      container.appendChild(toast);
+      playAudio(type === 'error' ? 'beep' : 'success');
+
+      setTimeout(() => {
+        toast.style.animation = 'toastOut 0.3s forwards';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       2. AMBIENT 120FPS PARTICLE CANVAS
+       ────────────────────────────────────────────────────────────────────── */
+    const canvas = document.getElementById('ambient-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.radius = Math.random() * 1.8 + 0.6;
+        this.color = Math.random() > 0.5 ? '#06B6D4' : '#EC4899';
+        this.alpha = Math.random() * 0.45 + 0.15;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.alpha;
+        ctx.fill();
+      }
+    }
+
+    const PARTICLE_COUNT = Math.min(65, Math.floor(window.innerWidth / 20));
+    for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      if (!document.hidden) {
+        ctx.clearRect(0, 0, width, height);
+        for (let i = 0; i < particles.length; i++) {
+          particles[i].update();
+          particles[i].draw();
+          for (let j = i + 1; j < particles.length; j++) {
+            const dx = particles[i].x - particles[j].x;
+            const dy = particles[i].y - particles[j].y;
+            const distSq = dx * dx + dy * dy;
+            if (distSq < 12000) {
+              ctx.beginPath();
+              ctx.moveTo(particles[i].x, particles[i].y);
+              ctx.lineTo(particles[j].x, particles[j].y);
+              ctx.strokeStyle = '#06B6D4';
+              ctx.globalAlpha = (1 - distSq / 12000) * 0.12;
+              ctx.stroke();
+            }
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* ──────────────────────────────────────────────────────────────────────
+       3. CYBERNETIC WEB AUDIO SYNTHESIZER
+       ────────────────────────────────────────────────────────────────────── */
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playAudio(type) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(300, now + 0.05);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'success') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'beep') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(440, now);
+          gain.gain.setValueAtTime(0.03, now);
+          gain.gain.linearRampToValueAtTime(0.001, now + 0.04);
+          osc.start(now);
+          osc.stop(now + 0.04);
+        }
+      } catch (e) {
+        // Audio policy ignore
+      }
+    }
+
+    function toggleAudioFX() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('audio-toggle-btn');
+      btn.textContent = audioEnabled ? '🔊' : '🔇';
+      btn.style.color = audioEnabled ? 'var(--c-cyan)' : 'var(--c-text-muted)';
+      showToast('info', 'Audio Effects', audioEnabled ? 'Sound FX Enabled' : 'Sound FX Muted');
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       4. NAVIGATION & TAB SWITCHING
+       ────────────────────────────────────────────────────────────────────── */
+    function switchTab(tabId) {
+      playAudio('click');
+      document.querySelectorAll('.tab-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+      });
+      document.querySelectorAll('.mobile-tab-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
+      });
+
+      const targetSection = document.getElementById('section-' + tabId);
+      if (targetSection) {
+        targetSection.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      if (tabId === 'speedlink') {
+        startRemotePeerSimulation();
+      }
+    }
+
+    function scrollToLobbySection() {
+      playAudio('click');
+      const el = document.getElementById('lobby-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       5. REAL CAMPUS DATA (SQUADS & BANGALORE S-VYASA STUDENTS)
+       ────────────────────────────────────────────────────────────────────── */
+    const SQUADS_DATA = [
+      {
+        id: "squad_1",
+        name: "TEAM LAAHA 2.O",
+        hackathon: "Smart India Hackathon (SIH)",
+        description: "Active premier hackathon squad building winning AI and WASM prototypes.",
+        max: 6,
+        current: 5,
+        members: [
+          { name: "Laltesh Chaudhary", role: "Team Lead", college: "S-VYASA University" },
+          { name: "Dev Sharma", role: "Full-Stack Dev", college: "IIIT Bangalore" },
+          { name: "K.M. Usha", role: "Computer Vision", college: "PES University" },
+          { name: "Chandrakala M", role: "Frontend Lead", college: "RVCE" },
+          { name: "Hasini Anugu", role: "Data Scientist", college: "PES University" }
+        ]
+      },
+      {
+        id: "squad_2",
+        name: "Team SRI",
+        hackathon: "Smart India Hackathon (SIH)",
+        description: "Autonomous data ingestion and cloud microservices team.",
+        max: 6,
+        current: 3,
+        members: [
+          { name: "Srilakshmi", role: "Lead", college: "PES University" },
+          { name: "Abdul Malik", role: "Member", college: "IIIT Bangalore" },
+          { name: "Vinay Bichchali", role: "Member", college: "BMSCE" }
+        ]
+      },
+      {
+        id: "squad_3",
+        name: "TEAM CHANDRA",
+        hackathon: "ETHGlobal Mumbai 2026",
+        description: "Responsive 3D interfaces and WebRTC low-latency audio channels.",
+        max: 6,
+        current: 3,
+        members: [
+          { name: "Chandrakala M", role: "Lead", college: "RVCE" },
+          { name: "Sourav Paul", role: "Member", college: "IIT Delhi" },
+          { name: "Shivam Singh", role: "Member", college: "BITS Pilani" }
+        ]
+      },
+      {
+        id: "squad_4",
+        name: "TEAM USHA",
+        hackathon: "SIH 2026",
+        description: "WASM OCR pipeline integration and Gemini AI copilot engineering.",
+        max: 6,
+        current: 3,
+        members: [
+          { name: "K.M. Usha", role: "Lead", college: "S-VYASA University" },
+          { name: "Arham Ahsan", role: "Member", college: "IIT Bombay" },
+          { name: "Shivam Kumar", role: "Member", college: "DTU Delhi" }
+        ]
+      },
+      {
+        id: "squad_5",
+        name: "TEAM APEX",
+        hackathon: "ETHGlobal Tokyo 2026",
+        description: "Zero-knowledge proofs, 3D interactive lanyard cards, and real-time state sync.",
+        max: 6,
+        current: 3,
+        members: [
+          { name: "Laltesh Chaudhary", role: "Lead", college: "S-VYASA University" },
+          { name: "Hasini A", role: "Member", college: "PES University" },
+          { name: "Akhilesh Nitharwal", role: "Member", college: "RVCE" }
+        ]
+      },
+      {
+        id: "squad_6",
+        name: "BLACK RIDERS",
+        hackathon: "Smart India Hackathon (SIH)",
+        description: "High-speed backend infra, CDN edge caches, and distributed data pipelines.",
+        max: 4,
+        current: 2,
+        members: [
+          { name: "Lalit Rawat", role: "Architect", college: "Newton School of Technology" },
+          { name: "Laltesh Chaudhary", role: "Lead", college: "S-VYASA University" }
+        ]
+      }
+    ];
+
+    const STUDENTS_DATA = [
+      {
+        name: "Lalit Rawat",
+        username: "lalit_rawat",
+        role: "Supreme Admin & Lead Architect",
+        college: "Newton School of Technology",
+        roll: "NST-2024-ADM01",
+        batch: "2024-2028",
+        branch: "B.Tech AI/ML & CS",
+        avatar: "👑",
+        skills: ["System Architecture", "AI/ML", "WebRTC", "Cybersecurity"]
+      },
+      {
+        name: "Laltesh Chaudhary",
+        username: "laltesh_chaudhary",
+        role: "Founder & Creator | Software Engineering",
+        college: "Bangalore S-VYASA University",
+        roll: "2402608054",
+        batch: "2023-2027",
+        branch: "B.Tech CS & Artificial Intelligence",
+        avatar: "👨‍💻",
+        skills: ["Python", "AI", "Data Science", "Firebase"]
+      },
+      {
+        name: "Rahul Singh",
+        username: "rahul_singh",
+        role: "Full-Stack Developer",
+        college: "Bangalore S-VYASA University",
+        roll: "BSU20231234",
+        batch: "2023-2027",
+        branch: "B.Tech Computer Science & Engineering",
+        avatar: "👨‍💻",
+        skills: ["React", "Node.js", "Firebase", "UI/UX"]
+      },
+      {
+        name: "Priya Kumar",
+        username: "priya_kumar",
+        role: "Data Scientist",
+        college: "Bangalore S-VYASA University",
+        roll: "BSU20231235",
+        batch: "2023-2027",
+        branch: "B.Tech Data Science",
+        avatar: "👩‍💻",
+        skills: ["Python", "TensorFlow", "Data Analysis", "ML"]
+      },
+      {
+        name: "Aman Verma",
+        username: "aman_verma",
+        role: "Backend Engineer",
+        college: "Bangalore S-VYASA University",
+        roll: "BSU20231236",
+        batch: "2024-2028",
+        branch: "B.Tech Software Engineering",
+        avatar: "👨‍💻",
+        skills: ["Go", "Microservices", "Docker", "Kubernetes"]
+      },
+      {
+        name: "Sneha Patil",
+        username: "sneha_patil",
+        role: "UI/UX Designer",
+        college: "Bangalore S-VYASA University",
+        roll: "BSU20231237",
+        batch: "2023-2027",
+        branch: "B.Des Interaction Design",
+        avatar: "👩‍💻",
+        skills: ["Figma", "Adobe XD", "CSS", "React"]
+      },
+      {
+        name: "Ravi Sharma",
+        username: "ravi_sharma",
+        role: "Mobile Developer",
+        college: "Bangalore S-VYASA University",
+        roll: "BSU20231238",
+        batch: "2024-2028",
+        branch: "B.Tech Information Technology",
+        avatar: "👨‍💻",
+        skills: ["Flutter", "Dart", "iOS", "Android"]
+      },
+      {
+        name: "Dev Sharma",
+        username: "dev_club",
+        role: "Full-Stack Dev & Real-Time Architect",
+        college: "IIIT Bangalore",
+        roll: "2402608012",
+        batch: "2023-2027",
+        branch: "B.Tech Computer Science",
+        avatar: "💻",
+        skills: ["Full-Stack", "WebSockets", "Node.js", "React"]
+      },
+      {
+        name: "K.M. Usha",
+        username: "USHA",
+        role: "Computer Vision Specialist",
+        college: "Bangalore S-VYASA University",
+        roll: "2402608028",
+        batch: "2024-2028",
+        branch: "B.Tech Computer Science (AI)",
+        avatar: "🧠",
+        skills: ["Computer Vision", "TensorFlow", "Deep Learning"]
+      },
+      {
+        name: "Chandrakala M",
+        username: "chandrakala.M",
+        role: "Frontend Architect",
+        college: "RV College of Engineering",
+        roll: "1RV23CS045",
+        batch: "2023-2027",
+        branch: "B.E. Computer Science",
+        avatar: "👩‍💻",
+        skills: ["UI/UX Design", "Three.js", "CSS3 / Tailwind"]
+      }
+    ];
+
+    function renderLobbySquads() {
+      const container = document.getElementById('squads-container');
+      container.innerHTML = SQUADS_DATA.map(sq => {
+        const fillPercent = Math.round((sq.current / sq.max) * 100);
+        return `
+          <div class="squad-card">
+            <div class="squad-top-row">
+              <div>
+                <div class="squad-name">${sq.name}</div>
+                <span class="squad-hackathon-tag">${sq.hackathon}</span>
+              </div>
+              <span class="status-tag verified">${sq.current}/${sq.max} MEMBERS</span>
+            </div>
+            <div class="squad-desc">${sq.description}</div>
+            <div class="squad-members-wrap">
+              <div class="squad-members-header">
+                <span>Roster Capacity</span>
+                <span>${fillPercent}% Full</span>
+              </div>
+              <div class="squad-roster-meter">
+                <div class="squad-meter-fill" style="width: ${fillPercent}%;"></div>
+              </div>
+              <div class="squad-avatar-row">
+                ${sq.members.map(m => `
+                  <span class="member-avatar-chip" title="${m.name} (${m.college})">
+                    <span>👤</span> ${m.name.split(' ')[0]}
+                  </span>
+                `).join('')}
+              </div>
+            </div>
+            <div class="squad-actions-row">
+              <button class="squad-join-btn" onclick="joinSquadAction('${sq.name}')">
+                <span>+ Join Squad 🤝</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderLobbyBuilders() {
+      const container = document.getElementById('builders-container');
+      container.innerHTML = STUDENTS_DATA.map(st => `
+        <div class="builder-card">
+          <div class="builder-header">
+            <div class="builder-avatar">${st.avatar}</div>
+            <div>
+              <div class="builder-name">${st.name}</div>
+              <div class="builder-college">${st.college}</div>
+            </div>
+          </div>
+          <div class="builder-meta">
+            <div>Roll: ${st.roll} • Batch: ${st.batch}</div>
+            <div style="color:#fff; margin-top:2px;">${st.branch}</div>
+          </div>
+          <div class="builder-skills-row">
+            ${st.skills.map(sk => `<span class="skill-badge">${sk}</span>`).join('')}
+          </div>
+          <button class="view-pass-btn" onclick="viewStudentPass('${st.name}', '${st.college}', '${st.roll}', '${st.batch}', '${st.branch}', '${st.avatar}')">
+            <span>🪪 View 3D Student Pass</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function switchLobbyView(view) {
+      playAudio('click');
+      document.getElementById('pill-squads').classList.toggle('active', view === 'squads');
+      document.getElementById('pill-builders').classList.toggle('active', view === 'builders');
+      document.getElementById('lobby-squads-view').style.display = view === 'squads' ? 'block' : 'none';
+      document.getElementById('lobby-builders-view').style.display = view === 'builders' ? 'block' : 'none';
+    }
+
+    function joinSquadAction(squadName) {
+      playAudio('success');
+      showToast('success', 'Squad Request Sent', `You have joined the waitlist for ${squadName}. Encrypted invitation sent to your World ID.`);
+    }
+
+    function viewStudentPass(name, college, roll, batch, branch, avatar) {
+      document.getElementById('pass-name').textContent = name;
+      document.getElementById('pass-college').textContent = college;
+      document.getElementById('pass-roll').textContent = roll;
+      document.getElementById('pass-batch').textContent = batch;
+      document.getElementById('pass-branch').textContent = branch;
+      document.getElementById('pass-avatar').textContent = avatar;
+      openModal('modal-pass');
+    }
+
+    renderLobbySquads();
+    renderLobbyBuilders();
+
+    /* ──────────────────────────────────────────────────────────────────────
+       6. UNIAI TERMINAL COPILOT & 0G COMPUTE WALLET
+       ────────────────────────────────────────────────────────────────────── */
+    const terminalBody = document.getElementById('terminal-body');
+    const termInput = document.getElementById('term-input');
+    let walletCredits = 1.271;
+
+    function handleTermKey(e) {
+      if (e.key === 'Enter') submitTermInput();
+    }
+
+    function handleChipClick(promptText) {
+      termInput.value = promptText;
+      submitTermInput();
+    }
+
+    function clearTerminal() {
+      playAudio('click');
+      terminalBody.innerHTML = `
+        <div class="term-msg system">[TERMINAL CLEARED] 0G Private Enclave Session Active.</div>
+      `;
+    }
+
+    function submitTermInput() {
+      const q = termInput.value.trim();
+      if (!q) return;
+      playAudio('beep');
+
+      appendTermMsg(q, 'user');
+      termInput.value = '';
+
+      walletCredits = Math.max(0.1, Number((walletCredits - 0.012).toFixed(3)));
+      document.getElementById('wallet-balance').textContent = walletCredits.toFixed(3);
+      const remainingPct = Math.round((walletCredits / 1.5) * 100);
+      document.getElementById('meter-percent-txt').textContent = `${remainingPct}% remaining`;
+      document.getElementById('meter-fill-bar').style.width = `${remainingPct}%`;
+
+      setTimeout(() => {
+        const responseHtml = generateCopilotResponse(q);
+        appendTermMsg(responseHtml, 'ai');
+        playAudio('success');
+      }, 400);
+    }
+
+    function appendTermMsg(content, role) {
+      const msg = document.createElement('div');
+      msg.className = 'term-msg ' + role;
+      msg.innerHTML = content;
+      terminalBody.appendChild(msg);
+      terminalBody.scrollTop = terminalBody.scrollHeight;
+    }
+
+    function generateCopilotResponse(query) {
+      const lower = query.toLowerCase();
+      if (lower.includes('calculus') || lower.includes('derivative')) {
+        return `📐 <strong>0G Calculus Copilot Analysis:</strong><br>
+The derivative measures the instantaneous rate of change of a function:<br>
+<div class="term-code-block">
+f'(x) = lim_{h -> 0} [ f(x + h) - f(x) ] / h
+<button class="copy-code-btn" onclick="copyText('f\'(x) = lim_{h -> 0} [ f(x + h) - f(x) ] / h')">Copy</button>
+</div>
+<strong>Core Rules Verified on 0G ZK Enclave:</strong><br>
+• Power Rule: d/dx [x^n] = n * x^(n-1)<br>
+• Product Rule: d/dx [u * v] = u'v + uv'<br>
+• Chain Rule: d/dx [f(g(x))] = f'(g(x)) * g'(x)<br>
+<em>Attestation: ZK-SNARK proof generated in 14ms. Ready for assignment submission.</em>`;
+      } else if (lower.includes('c++') || lower.includes('debug')) {
+        return `🛠️ <strong>C++ Zero-Knowledge Code Audit:</strong><br>
+Detected potential memory leak / dangling pointer in your pointer arithmetic:<br>
+<div class="term-code-block">
+// Optimized Modern C++20 Memory-Safe Pattern:
+#include &lt;memory&gt;
+#include &lt;vector&gt;
+
+auto squadData = std::make_unique&lt;std::vector&lt;std::string&gt;&gt;();
+squadData-&gt;push_back("Builder_0x3F89");
+// Automatic zero-overhead RAII deallocation
+<button class="copy-code-btn" onclick="copyText('auto squadData = std::make_unique<std::vector<std::string>>();')">Copy</button>
+</div>
+<em>Result: 0 memory leaks, 100% cache locality achieved.</em>`;
+      } else if (lower.includes('scan') || lower.includes('lecture')) {
+        return `📄 <strong>0G Private Computer Optical OCR:</strong><br>
+Scanned 4 pages of handwritten engineering notes.<br>
+• <strong>Key Topic:</strong> Distributed Consensus & Arkiv DB-Chain TTLs.<br>
+• <strong>Summary:</strong> Ephemeral state requires <code>ExpirationTime.fromDays(30)</code> to minimize storage bloat while guaranteeing verifiable validity for campus semesters.`;
+      } else if (lower.includes('benchmark')) {
+        return `⚡ <strong>0G ZK-SNARK Engine Benchmark:</strong><br>
+• Proof System: Plonky2 / Groth16 hybrid<br>
+• Proving Time: 16.8 ms<br>
+• Verification Gas: 0.000018 ETH (Layer 2 subsidized)<br>
+• Status: 100% Validated on Newton's Lobby node cluster.`;
+      } else {
+        return `💡 <strong>0G AI Synthesis for "${query}":</strong><br>
+Processed through our privacy-preserving neural cluster. All computations are verifiable via cryptographic zero-knowledge proofs and state-synced to Arkiv DB-Chain. How can I expand on this for your hackathon project?`;
+      }
+    }
+
+    function copyText(text) {
+      navigator.clipboard?.writeText(text);
+      showToast('success', 'Copied to Clipboard', text);
+    }
+
+    function claimDailyGasDrop() {
+      walletCredits = Number((walletCredits + 0.25).toFixed(3));
+      document.getElementById('wallet-balance').textContent = walletCredits.toFixed(3);
+      playAudio('success');
+      showToast('success', 'Gas Drop Claimed', 'Claimed +0.25 iAI compute credits! Your campus daily allocation has been updated.');
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       7. DAREDROP ARENA (6 Official Competition Dares & 30-min Auto-Rotation)
+       ────────────────────────────────────────────────────────────────────── */
+    const OFFICIAL_DARES = [
+      {
+        id: 1,
+        title: "NPC Challenge",
+        desc: "Act like a video game NPC for 30 seconds straight without breaking character.",
+        prize: "$500 USDC + 250 iAI",
+        submissions: 42
+      },
+      {
+        id: 2,
+        title: "Developer Face Challenge",
+        desc: "Recreate the face of a developer whose production code just crashed on demo day.",
+        prize: "$500 USDC + 300 iAI",
+        submissions: 78
+      },
+      {
+        id: 3,
+        title: "Victory Dance Challenge",
+        desc: "Perform a high-energy 10-second victory dance as if your startup just raised $10 million.",
+        prize: "$500 USDC + 350 iAI",
+        submissions: 64
+      },
+      {
+        id: 4,
+        title: "ETHGlobal Mumbai Meme",
+        desc: "Create and present a hilarious meme video about ETHGlobal Mumbai hackathon sprint life.",
+        prize: "$500 USDC + 200 iAI",
+        submissions: 91
+      },
+      {
+        id: 5,
+        title: "Funny Startup Slogan",
+        desc: "Pitch a hilarious slogan for a completely ridiculous, over-engineered Web3 startup.",
+        prize: "$500 USDC + 250 iAI",
+        submissions: 53
+      },
+      {
+        id: 6,
+        title: "Find a Cross-College Developer",
+        desc: "Find a builder from another university and exchange project architectures on video.",
+        prize: "$500 USDC + 400 iAI",
+        submissions: 110
+      }
+    ];
+
+    function renderDaresGrid(currentIndex) {
+      const grid = document.getElementById('dares-grid');
+      grid.innerHTML = OFFICIAL_DARES.map((dare, idx) => `
+        <div class="dare-card ${idx === currentIndex ? 'current' : ''}" onclick="selectDare(${idx})">
+          <div class="dare-num-badge">DARE 0${dare.id} • ${idx === currentIndex ? 'ACTIVE NOW' : 'IN ROTATION'}</div>
+          <div class="dare-card-title">${dare.title}</div>
+          <div class="dare-card-desc">${dare.desc}</div>
+          <div class="dare-card-footer">
+            <span class="dare-prize">${dare.prize}</span>
+            <span style="color:var(--c-text-muted);">${dare.submissions} proofs submitted</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectDare(idx) {
+      playAudio('click');
+      const dare = OFFICIAL_DARES[idx];
+      document.getElementById('active-dare-title').textContent = `Dare #0${dare.id}: ${dare.title}`;
+      document.getElementById('active-dare-desc').textContent = dare.desc;
+    }
+
+    function updateDareRotation() {
+      const now = new Date();
+      const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+      const diffMs = now - midnight;
+      const totalMinutes = Math.floor(diffMs / 60000);
+      const current30MinWindow = Math.floor(totalMinutes / 30);
+      const dareIndex = current30MinWindow % 6;
+
+      const activeDare = OFFICIAL_DARES[dareIndex];
+      document.getElementById('active-dare-title').textContent = `Dare #0${activeDare.id}: ${activeDare.title}`;
+      document.getElementById('active-dare-desc').textContent = activeDare.desc;
+
+      renderDaresGrid(dareIndex);
+
+      const msIntoCurrentWindow = diffMs % (30 * 60 * 1000);
+      const msRemaining = (30 * 60 * 1000) - msIntoCurrentWindow;
+      const remSec = Math.floor((msRemaining / 1000) % 60);
+      const remMin = Math.floor(msRemaining / 60000);
+
+      const formattedMin = String(remMin).padStart(2, '0');
+      const formattedSec = String(remSec).padStart(2, '0');
+      document.getElementById('dare-countdown-text').textContent = `Next Dare in ${formattedMin}:${formattedSec}`;
+    }
+
+    setInterval(updateDareRotation, 1000);
+    updateDareRotation();
+
+    // Recent Proofs Feed
+    const RECENT_PROOFS = [
+      { student: "Aarav Mehta (IIIT-B)", dare: "NPC Challenge", time: "8m ago", prize: "$500 USDC" },
+      { student: "K.M. Usha (S-VYASA)", dare: "Victory Dance", time: "18m ago", prize: "$500 USDC" },
+      { student: "Rohan V (RVCE)", dare: "Developer Face Challenge", time: "25m ago", prize: "$500 USDC" }
+    ];
+
+    function renderRecentProofs() {
+      const container = document.getElementById('recent-proofs-feed');
+      container.innerHTML = RECENT_PROOFS.map(p => `
+        <div style="background:var(--bg-card); border:1px solid var(--border-glass); border-radius:8px; padding:0.75rem 1rem; display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
+          <div>
+            <span style="color:#fff; font-weight:700;">${p.student}</span>
+            <span style="color:var(--c-text-muted); font-size:0.75rem;"> • Completed "${p.dare}" (${p.time})</span>
+          </div>
+          <div style="color:var(--c-lime); font-weight:700; font-family:var(--font-mono); font-size:0.8rem;">✔ ${p.prize} Credited</div>
+        </div>
+      `).join('');
+    }
+    renderRecentProofs();
+
+    /* ──────────────────────────────────────────────────────────────────────
+       8. CAMPUS STUDY VAULT (Arkiv Network DB-Chain & Swarm Storage)
+       ────────────────────────────────────────────────────────────────────── */
+    const VAULT_ITEMS = [
+      {
+        id: "ark_ent_01",
+        title: "Advanced Engineering Calculus & Vector Fields",
+        category: "Math",
+        author: "Prof. R. Narayana (S-VYASA)",
+        swarmHash: "bzz://7a8f9c1e...d4b2",
+        ttlDays: 28,
+        previewText: "Chapter 4: Green's Theorem and Divergence in Multidimensional Vector Spaces. Key formulas and complete solved university exam question papers."
+      },
+      {
+        id: "ark_ent_02",
+        title: "0G ZK Prover Pipeline & AI Architecture",
+        category: "AI",
+        author: "Dev Sharma (IIIT Bangalore)",
+        swarmHash: "bzz://e92c4b81...01f8",
+        ttlDays: 26,
+        previewText: "Complete engineering blueprint for high-throughput zero-knowledge AI model inferencing, memory layout benchmarks, and WebRTC streaming."
+      },
+      {
+        id: "ark_ent_03",
+        title: "Data Structures & Modern C++20 Algorithms",
+        category: "CS",
+        author: "Laltesh Chaudhary (S-VYASA University)",
+        swarmHash: "bzz://3f89a019...c0f4",
+        ttlDays: 30,
+        previewText: "Comprehensive implementation of Red-Black Trees, Graph Dijkstra, Segment Trees with Lazy Propagation, and concurrency primitives."
+      },
+      {
+        id: "ark_ent_04",
+        title: "Smart India Hackathon (SIH 2026) Winning Deck",
+        category: "Hackathon",
+        author: "Team LAAHA 2.0",
+        swarmHash: "bzz://8f2a1b9c...e4d3",
+        ttlDays: 24,
+        previewText: "Official presentation deck, judge pitch rubrics, architectural diagrams, and jury Q&A defense cheat sheet."
+      },
+      {
+        id: "ark_ent_05",
+        title: "Quantum Entanglement & Qubit Cryptography",
+        category: "Math",
+        author: "K.M. Usha (S-VYASA University)",
+        swarmHash: "bzz://c10b981c...48d7",
+        ttlDays: 29,
+        previewText: "Mathematical foundations of Shor's algorithm, quantum key distribution (BB84), and lattice-based post-quantum cryptography."
+      },
+      {
+        id: "ark_ent_06",
+        title: "Full-Stack WebRTC P2P Video Mesh Engine",
+        category: "CS",
+        author: "Chandrakala M (RVCE)",
+        swarmHash: "bzz://5f6a10b9...81c4",
+        ttlDays: 27,
+        previewText: "Ultra low-latency audio/video negotiation with ICE trickle, STUN/TURN fallback, and client-side neural face filters."
+      }
+    ];
+
+    let currentCategory = 'all';
+
+    function renderVaultGrid(items) {
+      const grid = document.getElementById('vault-grid');
+      grid.innerHTML = items.map(item => `
+        <div class="vault-card">
+          <div class="vault-card-header">
+            <div>
+              <div class="vault-file-title">${item.title}</div>
+              <div style="font-size:0.75rem; color:var(--c-cyan); margin-top:0.2rem;">By ${item.author}</div>
+            </div>
+            <span class="vault-ttl-tag">Expires in ${item.ttlDays}d</span>
+          </div>
+
+          <div class="vault-meta-list">
+            <div class="vault-meta-item">
+              <span>Arkiv Entity:</span>
+              <span style="color:#fff;">${item.id}</span>
+            </div>
+            <div class="vault-meta-item">
+              <span>Swarm BZZ:</span>
+              <span style="color:var(--c-gold);">${item.swarmHash}</span>
+            </div>
+            <div class="vault-meta-item">
+              <span>Expiration Policy:</span>
+              <span>ExpirationTime.fromDays(30)</span>
+            </div>
+          </div>
+
+          <div class="vault-card-actions">
+            <button class="vault-action-btn vault-action-preview" onclick="openPdfViewer('${item.title}', '${item.previewText.replace(/'/g, "\\'")}', '${item.swarmHash}')">
+              <span>👁️ Preview PDF</span>
+            </button>
+            <button class="vault-action-btn vault-action-swarm" onclick="downloadVaultDocument('${item.title}')">
+              <span>🐝 Swarm BZZ</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderVaultGrid(VAULT_ITEMS);
+
+    function filterVault() {
+      const query = document.getElementById('vault-search').value.toLowerCase();
+      const filtered = VAULT_ITEMS.filter(item => {
+        const matchesCat = currentCategory === 'all' || item.category === currentCategory;
+        const matchesQ = item.title.toLowerCase().includes(query) || item.author.toLowerCase().includes(query);
+        return matchesCat && matchesQ;
+      });
+      renderVaultGrid(filtered);
+    }
+
+    function setVaultCategory(cat, btn) {
+      playAudio('click');
+      currentCategory = cat;
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterVault();
+    }
+
+    function openPdfViewer(title, text, hash) {
+      playAudio('click');
+      document.getElementById('pdf-view-title').textContent = title;
+      document.getElementById('pdf-view-hash').textContent = `Swarm Hash: ${hash}`;
+      document.getElementById('pdf-view-body').innerHTML = `
+        <div style="border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+          <h2 style="color:var(--c-cyan); margin-bottom: 0.5rem;">${title}</h2>
+          <div style="font-size:0.8rem; color:var(--c-lime); font-family:var(--font-mono);">
+            ✔ Verified on Arkiv DB-Chain (30-Day TTL) • Swarm AES-256 Encrypted
+          </div>
+        </div>
+        <p style="font-size:1.05rem; margin-bottom:1.5rem;">${text}</p>
+        <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.5); border-radius: 8px; font-family: var(--font-mono); font-size: 0.85rem; color: #94A3B8;">
+          // ON-CHAIN AUDIT DATA<br>
+          Entity_Owner: 0x3F89a019b88127cA9b4e5f6A10B981C48D7C0F4D<br>
+          Network: Arkiv Network DB-Chain Mainnet<br>
+          Swarm_Manifest: ${hash}<br>
+          Verification_Status: PASSED (100% Zero-Knowledge Match)
+        </div>
+      `;
+      openModal('modal-pdf');
+    }
+
+    function downloadVaultDocument(title = "Study_Notes") {
+      playAudio('click');
+      const blob = new Blob([`Newton's Lobby Verified Academic Document\nTitle: ${title}\nEncrypted on Swarm BZZ\nAttested by Arkiv Network DB-Chain`], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${title.replace(/\s+/g, '_')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('success', 'Download Started', `Saved ${title} to your device.`);
+    }
+
+    function openVaultUploadModal() {
+      playAudio('click');
+      openModal('modal-publish');
+    }
+
+    function submitNewVaultDoc() {
+      const title = document.getElementById('pub-title').value.trim();
+      const cat = document.getElementById('pub-cat').value;
+      const summary = document.getElementById('pub-summary').value.trim();
+
+      if (!title) {
+        showToast('error', 'Validation Error', 'Please enter a document title.');
+        return;
+      }
+
+      VAULT_ITEMS.unshift({
+        id: "ark_ent_" + Math.floor(Math.random() * 900 + 100),
+        title: title,
+        category: cat,
+        author: "Current Student (You)",
+        swarmHash: "bzz://" + Math.random().toString(16).substring(2, 10) + "...zk",
+        ttlDays: 30,
+        previewText: summary || "Newly committed document on Arkiv Network DB-Chain with 30-day time-scoped expiration."
+      });
+
+      renderVaultGrid(VAULT_ITEMS);
+      closeModal('modal-publish');
+      showToast('success', 'Published to Arkiv', 'Document committed with ExpirationTime.fromDays(30)!');
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       9. SPEEDLINK 1080p & REELS LIVE STAGE
+       ────────────────────────────────────────────────────────────────────── */
+    let localStream = null;
+    let micMuted = false;
+    let camMuted = false;
+
+    function switchSpeedlinkSub(sub) {
+      playAudio('click');
+      document.getElementById('btn-sub-speed').classList.toggle('active', sub === 'speed');
+      document.getElementById('btn-sub-reels').classList.toggle('active', sub === 'reels');
+      document.getElementById('subview-speed').style.display = sub === 'speed' ? 'block' : 'none';
+      document.getElementById('subview-reels').style.display = sub === 'reels' ? 'block' : 'none';
+    }
+
+    async function startWebcam() {
+      try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const video = document.getElementById('local-video');
+        video.srcObject = localStream;
+        document.getElementById('local-fallback').style.display = 'none';
+        playAudio('success');
+        showToast('success', 'Camera Active', '1080p WebRTC camera stream is now broadcasting.');
+      } catch (e) {
+        showToast('info', 'Simulated Camera', 'Hardware camera permission not granted. Running simulated 120fps cyber avatar feed.');
+      }
+    }
+
+    function toggleMic() {
+      playAudio('click');
+      micMuted = !micMuted;
+      document.getElementById('btn-mute-mic').textContent = micMuted ? '🔇' : '🎤';
+      if (localStream) {
+        localStream.getAudioTracks().forEach(track => track.enabled = !micMuted);
+      }
+      showToast('info', 'Microphone', micMuted ? 'Muted' : 'Unmuted');
+    }
+
+    function toggleCam() {
+      playAudio('click');
+      camMuted = !camMuted;
+      document.getElementById('btn-toggle-cam').textContent = camMuted ? '🚫' : '📹';
+      if (localStream) {
+        localStream.getVideoTracks().forEach(track => track.enabled = !camMuted);
+      }
+      showToast('info', 'Camera Feed', camMuted ? 'Video Paused' : 'Video Resumed');
+    }
+
+    const PEER_STUDENTS = [
+      { name: "Dev Sharma", college: "IIIT Bangalore • Full-Stack Dev", avatar: "💻" },
+      { name: "Priya Kumar", college: "Bangalore S-VYASA • Data Science", avatar: "👩‍💻" },
+      { name: "K.M. Usha", college: "Bangalore S-VYASA • Computer Vision", avatar: "🧠" },
+      { name: "Chandrakala M", college: "RV College of Engineering • Frontend", avatar: "⚡" },
+      { name: "Sourav Paul", college: "IIT Delhi • ZK Cryptographer", avatar: "🛡️" }
+    ];
+    let peerIdx = 0;
+
+    function nextSpeedMatch() {
+      playAudio('beep');
+      peerIdx = (peerIdx + 1) % PEER_STUDENTS.length;
+      const peer = PEER_STUDENTS[peerIdx];
+
+      document.getElementById('remote-partner-name').textContent = peer.name;
+      document.getElementById('remote-partner-college').textContent = peer.college;
+      document.getElementById('remote-avatar').textContent = peer.avatar;
+
+      // Append greeting in chat
+      const chatBox = document.getElementById('speed-chat-box');
+      chatBox.innerHTML += `
+        <div class="chat-bubble peer">
+          <strong>${peer.name.split(' ')[0]}:</strong> Connected! Let's build together.
+        </div>
+      `;
+      chatBox.scrollTop = chatBox.scrollHeight;
+      showToast('success', 'Matched!', `Connected with ${peer.name} (${peer.college.split('•')[0]}).`);
+    }
+
+    function sendSpeedChat() {
+      const input = document.getElementById('speed-chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      playAudio('click');
+      const chatBox = document.getElementById('speed-chat-box');
+      chatBox.innerHTML += `
+        <div class="chat-bubble me">
+          <strong>You:</strong> ${text}
+        </div>
+      `;
+      input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulated peer reply
+      setTimeout(() => {
+        chatBox.innerHTML += `
+          <div class="chat-bubble peer">
+            <strong>Peer:</strong> Sounds like a plan! Let's link up on GitHub.
+          </div>
+        `;
+        chatBox.scrollTop = chatBox.scrollHeight;
+        playAudio('beep');
+      }, 900);
+    }
+
+    // Simulated Canvas Peer Waveform Video Feed
+    let peerAnimRunning = false;
+    function startRemotePeerSimulation() {
+      if (peerAnimRunning) return;
+      peerAnimRunning = true;
+      const peerCanvas = document.getElementById('remote-peer-canvas');
+      if (!peerCanvas) return;
+      const pctx = peerCanvas.getContext('2d');
+
+      function drawPeer() {
+        if (peerCanvas.width !== peerCanvas.clientWidth) {
+          peerCanvas.width = peerCanvas.clientWidth || 300;
+          peerCanvas.height = peerCanvas.clientHeight || 200;
+        }
+        const pw = peerCanvas.width;
+        const ph = peerCanvas.height;
+
+        pctx.fillStyle = '#060A10';
+        pctx.fillRect(0, 0, pw, ph);
+
+        const time = Date.now() * 0.002;
+        pctx.beginPath();
+        for (let x = 0; x < pw; x += 4) {
+          const y = ph / 2 + Math.sin(x * 0.02 + time) * 20 * Math.sin(time * 0.5);
+          if (x === 0) pctx.moveTo(x, y);
+          else pctx.lineTo(x, y);
+        }
+        pctx.strokeStyle = 'rgba(6, 182, 212, 0.4)';
+        pctx.lineWidth = 2;
+        pctx.stroke();
+
+        requestAnimationFrame(drawPeer);
+      }
+      drawPeer();
+    }
+
+    // Reels Switcher
+    const REELS = [
+      {
+        creator: "@rohit_builds",
+        caption: "Rebuilding our entire AI agent architecture 3 hours before hackathon submission 🚀 #NewtonsLobby",
+        likes: "1.4k",
+        color: "linear-gradient(135deg, #1e1b4b, #0f172a, #042f2e)"
+      },
+      {
+        creator: "@ananya_ai",
+        caption: "Testing 0G Private Computer ZK proofs on our mobile React Native client! 18ms latency! 🤯",
+        likes: "2.8k",
+        color: "linear-gradient(135deg, #4c0519, #1e1b4b, #022c22)"
+      },
+      {
+        creator: "@dev_club_bangalore",
+        caption: "When your team member says 'it works on my machine' during SIH jury evaluation 😂",
+        likes: "4.1k",
+        color: "linear-gradient(135deg, #14532d, #0f172a, #3b0764)"
+      }
+    ];
+    let reelIndex = 0;
+
+    function updateReelDisplay() {
+      const reel = REELS[reelIndex];
+      document.getElementById('reel-creator').textContent = reel.creator;
+      document.getElementById('reel-caption').textContent = reel.caption;
+      document.getElementById('reel-like-count').textContent = reel.likes;
+      document.getElementById('reel-bg-visual').style.background = reel.color;
+    }
+
+    function nextReel() {
+      playAudio('click');
+      reelIndex = (reelIndex + 1) % REELS.length;
+      updateReelDisplay();
+    }
+
+    function prevReel() {
+      playAudio('click');
+      reelIndex = (reelIndex - 1 + REELS.length) % REELS.length;
+      updateReelDisplay();
+    }
+
+    function likeReel(btn) {
+      playAudio('success');
+      btn.style.transform = 'scale(1.35)';
+      btn.style.color = 'var(--c-magenta)';
+      showToast('success', 'Liked Reel', 'Added to your verified favorites.');
+      setTimeout(() => btn.style.transform = 'scale(1)', 200);
+    }
+
+    function openReelComments() {
+      playAudio('click');
+      showToast('info', 'Live Comments', 'Decentralized comments synchronized with Arkiv DB-Chain.');
+    }
+
+    function shareReel() {
+      playAudio('click');
+      navigator.clipboard?.writeText(window.location.href);
+      showToast('success', 'Link Copied', 'Reel link copied to clipboard!');
+    }
+
+    /* ──────────────────────────────────────────────────────────────────────
+       10. MODAL CONTROLS & WEB3 SIMULATIONS
+       ────────────────────────────────────────────────────────────────────── */
+    function openModal(modalId) {
+      playAudio('click');
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      playAudio('click');
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function openApkModal() { openModal('modal-apk'); }
+    function openWorldIdModal() { openModal('modal-worldid'); }
+    function openProofModal() { openModal('modal-proof'); }
+    function openPrivacyModal() { showToast('info', 'Zero-Knowledge Privacy', 'Iris hashes are converted to cryptographic nullifiers. No biometric data ever leaves your device.'); }
+    function openTermsModal() { showToast('info', 'Campus Terms', 'Adhere to university honor codes, respectful squad conduct, and academic integrity.'); }
+
+    function triggerApkDownload() {
+      playAudio('success');
+      showToast('success', 'Starting APK Download', 'Downloading official Newton\'s Lobby Android APK (76.8 MB)...');
+      // Direct anchor trigger
+      const a = document.createElement('a');
+      a.href = '/newtonslobby.apk';
+      a.download = 'newtonslobby.apk';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function simulateWorldIdVerification() {
+      const btn = document.getElementById('btn-run-worldid');
+      const eye = document.getElementById('orb-eye-icon');
+      btn.textContent = "Scanning Orb Proof...";
+      btn.disabled = true;
+      eye.style.transform = 'scale(1.3) rotate(15deg)';
+      playAudio('beep');
+
+      setTimeout(() => {
+        btn.textContent = "Generating Cryptographic Nullifier...";
+        eye.style.transform = 'scale(1) rotate(0deg)';
+      }, 700);
+
+      setTimeout(() => {
+        btn.textContent = "Verified ✔";
+        btn.style.background = "linear-gradient(135deg, var(--c-lime), #15803D)";
+        btn.disabled = false;
+        document.getElementById('worldid-status-box').style.display = 'block';
+        document.getElementById('badge-world-tag').textContent = 'ORB CONFIRMED';
+        document.getElementById('nav-world-btn').innerHTML = '<span>🟢 Orb Verified</span>';
+        playAudio('success');
+        showToast('success', 'World ID 4.0 Verified', 'Sybil-resistant proof validated on World ID 4.0 IDKit.');
+      }, 1500);
+    }
+
+    function triggerProofCapture() {
+      playAudio('click');
+      document.getElementById('proof-upload-prompt').style.display = 'none';
+      const video = document.getElementById('proof-recorded-video');
+      video.style.display = 'block';
+      document.getElementById('zk-laser-scanner').style.display = 'block';
+      showToast('info', 'Video Loaded', 'Entry video ready for 0G ZK Computer Vision analysis.');
+    }
+
+    function executeProofVerification() {
+      const steps = document.getElementById('zk-verify-steps');
+      steps.style.display = 'block';
+      playAudio('beep');
+
+      setTimeout(() => {
+        document.getElementById('zk-step-1').innerHTML = '✔ [1/3] Neural landmark frames extracted!';
+        document.getElementById('zk-step-2').style.color = 'var(--c-cyan)';
+      }, 600);
+
+      setTimeout(() => {
+        document.getElementById('zk-step-2').innerHTML = '✔ [2/3] 0G ZK-SNARK constraint proof verified!';
+        document.getElementById('zk-step-3').style.color = 'var(--c-cyan)';
+      }, 1200);
+
+      setTimeout(() => {
+        document.getElementById('zk-step-3').innerHTML = '✔ [3/3] Attested to Arkiv DB-Chain!';
+        playAudio('success');
+        showToast('success', 'Dare Approved!', '$500 USDC + 350 iAI credits dispatched to your verified wallet.');
+        closeModal('modal-proof');
+
+        // Prepend to recent feed
+        RECENT_PROOFS.unshift({
+          student: "Current Builder (You)",
+          dare: document.getElementById('active-dare-title').textContent,
+          time: "Just now",
+          prize: "$500 USDC"
+        });
+        renderRecentProofs();
+      }, 1800);
+    }
+
+    // 3D Lanyard Card tilt effect on mousemove
+    const lanyardCard = document.getElementById('lanyard-card-element');
+    window.addEventListener('mousemove', (e) => {
+      if (!lanyardCard || !document.getElementById('modal-pass').classList.contains('active')) return;
+      const rect = lanyardCard.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      lanyardCard.style.transform = `rotateY(${x * 0.08}deg) rotateX(${-y * 0.08}deg)`;
+    });
+
+    // Close modals on clicking backdrop
+    window.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal-backdrop')) {
+        e.target.classList.remove('active');
+      }
+    });
+
+    // Keyboard navigation for reels
+    window.addEventListener('keydown', (e) => {
+      if (document.getElementById('section-speedlink').classList.contains('active')) {
+        if (e.key === 'ArrowDown') nextReel();
+        if (e.key === 'ArrowUp') prevReel();
+      }
+    });
+  </script>
+</body>
+</html>

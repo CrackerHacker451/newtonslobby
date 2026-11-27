@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Newton's Lobby — Account & Data Deletion</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      line-height: 1.6;
+      padding: 24px;
+    }
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    h1 { color: #06b6d4; font-size: 24px; margin-top: 0; }
+    h2 { color: #ec4899; font-size: 18px; margin-top: 24px; }
+    p, li { color: #b6c2cf; font-size: 14px; }
+    ol, ul { margin-left: 20px; margin-bottom: 16px; }
+    li { margin-bottom: 6px; }
+    a { color: #06b6d4; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #38bdf8;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.15);
+      color: #06b6d4;
+      border: 1px solid #06b6d4;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #94a3b8;
+      font-size: 13px;
+      margin-bottom: 16px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-btn:hover {
+      color: #06b6d4;
+    }
+    .contact-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin: 12px 0;
+    }
+    .action-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #06b6d4, #0891b2);
+      color: #fff;
+      font-weight: 600;
+      padding: 10px 18px;
+      border-radius: 8px;
+      margin-top: 8px;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .action-btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+    .footer-links {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #30363d;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="/" class="back-btn">← Back to Newton's Lobby</a>
+    <div class="badge">Official Data Deletion & Privacy Policy</div>
+    <h1>Newton's Lobby — Account & Data Deletion Request</h1>
+    <p>Newton's Lobby (package name: <code>com.Newtons_Lobby.myapp</code>) respects user privacy rights and provides full control over user data deletion in compliance with Google Play Policy.</p>
+
+    <h2>1. How to Delete Your Account Inside the App</h2>
+    <p>You can delete your account and all associated personal data immediately inside the Newton's Lobby Android Application:</p>
+    <ol>
+      <li>Open the <strong>Newton's Lobby App</strong> on your Android phone.</li>
+      <li>Go to the <strong>Profile Settings ⚙️</strong> tab.</li>
+      <li>Scroll down and tap <strong>Delete Account & Data 🗑️</strong>.</li>
+      <li>Confirm deletion. Your user profile, messages, posts, and wallet data will be permanently deleted immediately.</li>
+    </ol>
+
+    <h2>2. Online Web Account Deletion Request</h2>
+    <p>If you no longer have access to the mobile application and wish to request the deletion of your account and personal data, please email our data protection officer or use the direct mail action below:</p>
+    
+    <div class="contact-card">
+      <p><strong>Data Safety Contact Email:</strong> <a href="mailto:dtgtgm@gmail.com?subject=Account%20Deletion%20Request">dtgtgm@gmail.com</a></p>
+      <p><strong>Subject:</strong> Account Deletion Request — [Your Email / User ID]</p>
+      <p><strong>Processing Time:</strong> All web account deletion requests are completed within 48 hours.</p>
+      <a href="mailto:dtgtgm@gmail.com?subject=Account%20Deletion%20Request%20-%20com.Newtons_Lobby.myapp&body=Hello%20Newton%27s%20Lobby%20Data%20Protection%20Team%2C%0A%0APlease%20permanently%20delete%20my%20Newton%27s%20Lobby%20account%20and%20all%20associated%20data.%0A%0AAccount%20Email%20%2F%20User%20ID%3A%20%0AReason%20(Optional)%3A%20%0A%0AThank%20you." class="action-btn">✉️ Send Account Deletion Request Email</a>
+    </div>
+
+    <h2>3. What Data Is Permanently Purged</h2>
+    <ul>
+      <li>Firebase Authentication User Profile & Account ID</li>
+      <li>Firestore Student Record & UniCoins Wallet Balance</li>
+      <li>In-App Direct & Group Chat Message History</li>
+      <li>DareDrop Challenge Submissions, Photos, Videos & Comments</li>
+      <li>Device Tokens (FCM tokens for push notifications)</li>
+    </ul>
+
+    <h2>4. Data Retention Policy</h2>
+    <p>Upon account deletion, all personal data stored in our database is permanently erased. No user data is retained or sold to third parties.</p>
+
+    <div class="footer-links">
+      <a href="/privacy.html">Privacy Policy</a>
+      <span style="color:#64748b;">•</span>
+      <a href="/data-safety.html">Google Play Data Safety</a>
+      <span style="color:#64748b;">•</span>
+      <a href="/safety.html">Safety & CSAE Prevention</a>
+    </div>
+  </main>
+</body>
+</html>

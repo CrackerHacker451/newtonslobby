@@ -1,0 +1,11 @@
+{
+  "name": "newtonslobby-server",
+  "version": "2.4.0",
+  "type": "module",
+  "main": "gate.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "serverless-http": "^3.2.0"
+  }
+}

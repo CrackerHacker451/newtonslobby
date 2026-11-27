@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Newton's Lobby — Google Play Data Safety Disclosures</title>
+  <style>
+    :root {
+      --bg-main: #0d1117;
+      --bg-card: #161b22;
+      --border-color: #30363d;
+      --c-cyan: #06b6d4;
+      --c-magenta: #ec4899;
+      --c-lime: #10b981;
+      --c-gold: #f59e0b;
+      --c-text: #e6edf3;
+      --c-muted: #8b949e;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background: var(--bg-main);
+      color: var(--c-text);
+      line-height: 1.6;
+      padding: 32px 16px;
+    }
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 12px 45px rgba(0,0,0,0.7);
+    }
+    h1 { color: var(--c-cyan); font-size: 26px; margin-bottom: 8px; font-weight: 800; letter-spacing: -0.02em; }
+    h2 { color: #fff; font-size: 19px; margin-top: 32px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; }
+    h3 { color: var(--c-cyan); font-size: 15px; margin-top: 18px; margin-bottom: 8px; }
+    p, li { color: #b6c2cf; font-size: 14px; margin-bottom: 10px; }
+    ul { margin-left: 20px; margin-bottom: 16px; }
+    a { color: var(--c-cyan); text-decoration: none; font-weight: 500; }
+    a:hover { text-decoration: underline; color: var(--c-magenta); }
+    code { font-family: var(--font-mono); background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; font-size: 13px; color: #38bdf8; }
+    .badge {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--c-cyan);
+      border: 1px solid var(--c-cyan);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--c-muted);
+      font-size: 13px;
+      margin-bottom: 18px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .back-btn:hover { color: var(--c-cyan); }
+    .app-meta-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      font-size: 13px;
+    }
+    .app-meta-item span:first-child { color: var(--c-muted); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
+    .app-meta-item span:last-child { color: #fff; font-weight: 600; font-family: var(--font-mono); }
+    
+    /* Security Practice Badges */
+    .practices-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin: 16px 0 24px;
+    }
+    .practice-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .practice-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--c-lime);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .practice-text strong { display: block; font-size: 13px; color: #fff; margin-bottom: 2px; }
+    .practice-text p { font-size: 12px; color: var(--c-muted); margin: 0; }
+
+    /* Data Safety Table */
+    .table-container {
+      overflow-x: auto;
+      margin: 16px 0 24px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+    th {
+      background: #0d1117;
+      color: #fff;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(48, 54, 61, 0.6);
+      color: #cbd5e1;
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    .tag-collected {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--c-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-ephemeral {
+      display: inline-block;
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--c-gold);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tag-no-share {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--c-lime);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .contact-card {
+      background: rgba(236, 72, 153, 0.08);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-top: 28px;
+    }
+    .contact-card h3 { color: var(--c-magenta); margin-top: 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <a href="/" class="back-btn">← Back to Newton's Lobby</a>
+    <div class="badge">Google Play Data Safety Section</div>
+    <h1>Newton's Lobby — Data Safety Disclosures</h1>
+    <p>Last verified: November 22, 2026. This document provides complete, transparent disclosures for the <strong>Google Play Console Data Safety section</strong> for Newton's Lobby.</p>
+
+    <!-- App Metadata Box -->
+    <div class="app-meta-box">
+      <div class="app-meta-item">
+        <span>Application Name</span>
+        <span>Newton's Lobby</span>
+      </div>
+      <div class="app-meta-item">
+        <span>Package Name</span>
+        <span>com.Newtons_Lobby.myapp</span>
+      </div>
+      <div class="app-meta-item">
+        <span>Developer Contact</span>
+        <span>dtgtgm@gmail.com</span>
+      </div>
+      <div class="app-meta-item">
+        <span>Official Website</span>
+        <span>www.newtonslobby.com</span>
+      </div>
+    </div>
+
+    <!-- Security Practices Summary -->
+    <h2>1. Overview of Security Practices</h2>
+    <div class="practices-grid">
+      <div class="practice-card">
+        <div class="practice-icon">🔒</div>
+        <div class="practice-text">
+          <strong>Data Encrypted in Transit</strong>
+          <p>All data sent between your device and servers is encrypted using modern TLS 1.3 / HTTPS encryption.</p>
+        </div>
+      </div>
+      <div class="practice-card">
+        <div class="practice-icon">🛡️</div>
+        <div class="practice-text">
+          <strong>Data Encrypted at Rest</strong>
+          <p>Stored credentials and study vault materials are protected with AES-256 server-side encryption.</p>
+        </div>
+      </div>
+      <div class="practice-card">
+        <div class="practice-icon">🗑️</div>
+        <div class="practice-text">
+          <strong>User Data Deletion Request</strong>
+          <p>Users can request permanent deletion of their account and all associated data at any time.</p>
+        </div>
+      </div>
+      <div class="practice-card">
+        <div class="practice-icon">🚫</div>
+        <div class="practice-text">
+          <strong>No Data Sold to Third Parties</strong>
+          <p>We do not sell, rent, or monetize personal user data to advertisers or data brokers.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Data Types Table -->
+    <h2>2. Data Collection and Purpose Table</h2>
+    <p>Below is the itemized disclosure mapping to the Google Play Console Data Safety questionnaire:</p>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Data Category</th>
+            <th>Data Type</th>
+            <th>Collection Status</th>
+            <th>Sharing Status</th>
+            <th>Purpose & Usage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Personal Info</strong></td>
+            <td>Name, Email Address</td>
+            <td><span class="tag-collected">Collected</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Account management, university authentication, squad collaboration, and notifications.</td>
+          </tr>
+          <tr>
+            <td><strong>Personal Info</strong></td>
+            <td>User IDs / Student ID</td>
+            <td><span class="tag-collected">Collected</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Firebase UID, university roll number, and World ID zero-knowledge nullifier hash for Proof of Personhood.</td>
+          </tr>
+          <tr>
+            <td><strong>Photos and Videos</strong></td>
+            <td>Profile Photo & Challenge Video Proofs</td>
+            <td><span class="tag-collected">Collected (Optional)</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Avatar customization, student pass generation, and DareDrop competition proof evaluation.</td>
+          </tr>
+          <tr>
+            <td><strong>Audio</strong></td>
+            <td>Voice / Microphone Feed</td>
+            <td><span class="tag-ephemeral">Ephemeral Stream</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Real-time peer-to-peer WebRTC SpeedLink video calls. Audio is streamed P2P in real-time and <strong>never recorded or stored</strong> on our servers.</td>
+          </tr>
+          <tr>
+            <td><strong>Messages</strong></td>
+            <td>In-app Chats & Squad Messages</td>
+            <td><span class="tag-collected">Collected</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Delivering real-time communication between hackathon squad members via Firebase Realtime Database.</td>
+          </tr>
+          <tr>
+            <td><strong>Files & Docs</strong></td>
+            <td>Study Notes & PDF Uploads</td>
+            <td><span class="tag-collected">Collected (Optional)</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Shared campus notes stored in the Campus Study Vault with 30-day time-scoped expiration (Arkiv DB-Chain).</td>
+          </tr>
+          <tr>
+            <td><strong>App Info & Performance</strong></td>
+            <td>Crash Logs & Diagnostics</td>
+            <td><span class="tag-collected">Collected</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>App performance monitoring, bug identification, and latency optimization via Firebase Crashlytics.</td>
+          </tr>
+          <tr>
+            <td><strong>Device or Other IDs</strong></td>
+            <td>Device IDs / FCM Tokens</td>
+            <td><span class="tag-collected">Collected</span></td>
+            <td><span class="tag-no-share">Not Shared</span></td>
+            <td>Firebase Cloud Messaging (FCM) push notification tokens and Firebase App Check security tokens.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Zero-Knowledge Proofs & World ID -->
+    <h2>3. Zero-Knowledge Proofs & Biometrics Exemption</h2>
+    <p>Newton's Lobby integrates World ID 4.0 IDKit for sybil resistance and student verification. <strong>We do not collect, process, or store biometric data (e.g. iris scans or facial geometry) on our servers or within the app.</strong></p>
+    <ul>
+      <li>Biometric verification is handled entirely within the World App on the user's hardware device.</li>
+      <li>Our servers only receive a one-way cryptographic SHA-256 nullifier hash verifying uniqueness without revealing the user's identity.</li>
+    </ul>
+
+    <!-- Third-Party SDK Subprocessors -->
+    <h2>4. Third-Party Service Providers (Subprocessors)</h2>
+    <p>We work with trusted industry-standard infrastructure providers to deliver the app's functionality:</p>
+    <ul>
+      <li><strong>Google Cloud Platform & Firebase:</strong> Authentication, Firestore persistent storage, Realtime Database, Cloud Messaging (FCM), and App Check.</li>
+      <li><strong>0G (ZeroGravity) Labs:</strong> Decentralized zero-knowledge AI inference (0gm-1.0) and private compute enclaves.</li>
+      <li><strong>Arkiv Network:</strong> DB-Chain ephemeral records with <code>ExpirationTime.fromDays(30)</code> time-scoped security.</li>
+      <li><strong>Swarm (bzz):</strong> Decentralized encrypted storage for heavy study notes packages.</li>
+    </ul>
+
+    <!-- Data Retention and Deletion Request -->
+    <h2>5. Data Retention & Account Deletion Protocol</h2>
+    <p>In full compliance with Google Play Store User Data policies, users have the right to request deletion of their account and all personal information:</p>
+    <h3>How to Request Account & Data Deletion:</h3>
+    <ul>
+      <li><strong>In-App:</strong> Open Newton's Lobby &gt; Navigate to <em>Profile / Settings</em> &gt; Tap <em>Delete Account & Data</em>.</li>
+      <li><strong>Online Web Portal:</strong> Submit directly via our dedicated <a href="/delete-account.html">Account & Data Deletion Request Page</a>.</li>
+      <li><strong>Via Email:</strong> Send an email from your registered university address to <a href="mailto:dtgtgm@gmail.com">dtgtgm@gmail.com</a> with the subject line <code>Data Deletion Request - [Your Username]</code>.</li>
+    </ul>
+    <p>Upon verification, all account records, user profile information, messages, and uploaded challenge proofs will be permanently deleted from our live production databases within <strong>30 days</strong>.</p>
+
+    <!-- Child Safety & Sensitive Data -->
+    <h2>6. Child Safety & CSAE Policy</h2>
+    <p>Newton's Lobby has an absolute zero-tolerance policy regarding Child Sexual Abuse Material (CSAM) and Child Sexual Exploitation and Abuse (CSAE). We employ automated zero-knowledge perceptual hash filters and immediately report violations to the National Center for Missing & Exploited Children (NCMEC) and appropriate law enforcement authorities.</p>
+    <p>Review our complete policy at: <a href="/safety.html">Newton's Lobby Child Safety & CSAE Prevention Standards</a>.</p>
+
+    <!-- Contact Card -->
+    <div class="contact-card">
+      <h3>Designated Privacy & Data Protection Contact</h3>
+      <p>For any questions regarding Google Play Store compliance, data processing, or data deletion inquiries, please reach out to our team:</p>
+      <p><strong>Email:</strong> <a href="mailto:dtgtgm@gmail.com">dtgtgm@gmail.com</a></p>
+      <p><strong>Package Name:</strong> <code>com.Newtons_Lobby.myapp</code></p>
+      <p><strong>Official URL:</strong> <a href="https://www.newtonslobby.com">https://www.newtonslobby.com</a></p>
+    </div>
+  </main>
+</body>
+</html>
